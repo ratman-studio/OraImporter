@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 
 using UnityEngine;
 
-[CreateAssetMenu]
-public class FloatVariable : ScriptableObject
+namespace com.szczuro.variables
 {
-    public float InitialValue;
-    [NonSerialized]
-    public float RuntimeValue;
-    public void OnAfterDeserialize()
+    [CreateAssetMenu(fileName = "UnamedFloatVariable", menuName = "Variables/Float")]
+    public class FloatVariable : Variable<float>
     {
-        RuntimeValue = InitialValue;
-    }
 
-    public void OnBeforeSerialize() {}
+    }
 }
