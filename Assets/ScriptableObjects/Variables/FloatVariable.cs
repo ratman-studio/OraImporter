@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace com.szczuro.variables
 {
-    [CreateAssetMenu(fileName = "UnamedFloatVariable", menuName = "Variables/Float")]
+    [CreateAssetMenu(fileName = "UnnamedFloatVariable", menuName = "Variables/Float")]
     public class FloatVariable : Variable<float>
     {
 

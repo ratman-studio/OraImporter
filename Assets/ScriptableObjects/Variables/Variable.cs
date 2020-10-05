@@ -27,7 +27,7 @@ namespace com.szczuro.variables
         /// Value thati is changed at runtime without modifing initial variable 
         /// </summary>
         public T RuntimeValue { get; set; }
-        public void onEnable()
+        public void OnEnable()
         {
             RuntimeValue = DefaultValue;
         }
