@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
+using UnityEditor;
+
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -23,7 +25,7 @@ namespace com.szczuro.slots.data.tests
             List<int> reel1 = new List<int>() { 1, 2, 3, 4, 1 };
             List<int> reel2 = new List<int>() { 4, 3, 2, 1, 2 };
             List<int> reel3 = new List<int>() { 2, 1, 2, 1, 3 };
-            slot.Reels = new List<List<int>> { reel1, reel2, reel3 };
+            //slot.Reels = new List<List<int>> { reel1, reel2, reel3 };
 
             return slot;
         }
@@ -46,10 +48,6 @@ namespace com.szczuro.slots.data.tests
 
             Assert.AreEqual(4, slot.StopTypes.Count);
             Assert.AreEqual("one", slot.StopTypes[0]);
-
-            Assert.AreEqual(3, slot.Reels.Count);
-            Assert.AreEqual(5, slot.Reels[0].Count);
-            Assert.AreEqual(1, slot.Reels[0][0]);
         }
 
         [Test]
@@ -65,25 +63,58 @@ namespace com.szczuro.slots.data.tests
             // this data is needed to be provided by designer
             Assert.AreEqual(null, slot.Name);
             Assert.AreEqual(0, slot.StopTypes.Count);
-            Assert.AreEqual(0, slot.Reels.Count);
+            //Assert.AreEqual(0, slot.Reels.Count);
         }
     }
-    public class SlotInfoTest : SlotTests
+    public class SlotDataValidation : SlotTests
     {
-        [Test]
-        public void MinLessThanMax_Validates()
+        private SlotData[] sds;
+        [SetUp]
+        public void BeforeTest()
         {
-            SlotData slotData = PrepareTestSlot();
-            InfoData slotInfo = new InfoData(slotData);
-            Assert.IsTrue(slotInfo.Validate());
+            sds = TestHelper.GetAllInstances<SlotData>();
         }
 
-        public void MaxLessThanMin_Invalidate()
+        [Test]
+        public void MinBetLessThanMaxBet()
         {
-            SlotData slotData = PrepareTestSlot();
-            slotData.MaxBet = 1;
-            InfoData slotInfo = new InfoData(slotData);
-            Assert.IsTrue(slotInfo.Validate());
+            foreach (SlotData slot in sds)
+                Assert.LessOrEqual(slot.MinBet, slot.MaxBet);
+        }
+        [Test]
+        public void MinBetBiggerThan0()
+        {
+            foreach (SlotData slot in sds)
+                Assert.GreaterOrEqual( slot.MinBet, 1);
+        }
+
+        [Test]
+        public void StopType_TwoOrMore()
+        {
+            foreach (SlotData slot in sds)
+                Assert.GreaterOrEqual(slot.StopTypes.Count, 2);
+        }
+
+        [Test]
+        public void PayLines_OneOrMore()
+        {
+            foreach (SlotData slot in sds)
+                Assert.GreaterOrEqual(slot.StopTypes.Count, 1);
+        }
+    }
+
+    class TestHelper
+    {
+        public static T[] GetAllInstances<T>() where T : ScriptableObject
+        {
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);  //FindAssets uses tags check documentation for more info
+            T[] a = new T[guids.Length];
+            for (int i = 0; i < guids.Length; i++)         //probably could get optimized 
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+                a[i] = AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+            return a;
         }
     }
 }
