@@ -8,12 +8,14 @@ namespace com.szczuro.slots.data
     public class SlotData : ScriptableObject
     {
         public string Name;
-        public int MinBet;
-        public int MaxBet;
-        public int Paylines;
+        // this data could be changed by designer
+        public int MinBet = 1;
+        public int MaxBet = 1;
+        public int Paylines = 1;
 
-        public Dictionary<int, string> StopTypes;
-        public List<Dictionary<int, int>> Reels;
+        // this data is needed to be provided by designer
+        public List<string> StopTypes = new List<string>();
+        public List<List<int>> Reels = new List<List<int>>();
 
     }
 }
