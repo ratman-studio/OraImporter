@@ -17,5 +17,11 @@ namespace com.szczuro.slots.data
         public List<string> StopTypes = new List<string>();
         public List<List<int>> Reels = new List<List<int>>();
 
+        public bool Validate()
+        {
+
+
+            return true;
+        }
     }
 }
