@@ -16,6 +16,11 @@ namespace com.szczuro.slots.data
 
         // this data is needed to be provided by designer
         public List<string> StopTypes = new List<string>();
+        public ReelWheel[] Reels;
     }
-
+    [System.Serializable]
+    public class ReelWheel
+    {
+        public int[] colors;
+    }
 }

@@ -16,3 +16,10 @@ MonoBehaviour:
   MinBet: 1
   MaxBet: 1
   Paylines: 1
+  StopTypes:
+  - bell
+  - horse_shoe
+  - diamond
+  - heart
+  - spades
+  - star
