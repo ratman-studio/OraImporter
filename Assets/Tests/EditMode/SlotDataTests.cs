@@ -138,7 +138,6 @@ namespace com.szczuro.slots.data.tests
                         Assert.GreaterOrEqual(color,0);
                         Assert.Less(color, slot.StopTypes.Count());
                     }
-                        
         }
         [Test]
         public void Reels_StopCount_MoreThan1()
