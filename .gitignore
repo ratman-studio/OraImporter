@@ -3,3 +3,10 @@
 ################################################################################
 
 /Library
+/obj/Debug
+/Logs
+/Temp
+/Packages
+/.vs/SlotMachine/v16
+*.csproj
+/SlotMachine.sln
