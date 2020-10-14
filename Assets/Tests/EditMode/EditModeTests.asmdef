@@ -3,10 +3,10 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Data",
-        "Slots"
+        "Game"
     ],
     "includePlatforms": [
+        "CloudRendering",
         "Editor"
     ],
     "excludePlatforms": [],
