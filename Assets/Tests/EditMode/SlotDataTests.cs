@@ -136,6 +136,7 @@ namespace com.szczuro.slots.data.tests
             Assert.AreEqual(null, slotEmpty.Payouts, "Payline not found");
         }
     }
+    
 
   
 }

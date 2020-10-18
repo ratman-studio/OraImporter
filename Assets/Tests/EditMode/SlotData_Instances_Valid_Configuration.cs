@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -19,7 +20,20 @@ namespace com.szczuro.slots.data.tests
             return a;
         }
     }
-    public class SlotData_Instances_Valid_Configuration: SlotTests
+
+    public class ReelWheel_Instacning
+    {
+        [Test]
+        public void ReelWheel_Instancing()
+        {
+            var l = new List<int>() { 1, 2, 3, 4 };
+            var r = new ReelWheel(l);
+            Assert.IsNotNull(r);
+            Assert.AreEqual(l,r.colors);
+        }
+    }
+
+    public class SlotData_Instances_Valid_Configuration
     {
         private SlotData[] sds;
         [SetUp]
