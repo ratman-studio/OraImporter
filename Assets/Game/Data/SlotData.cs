@@ -37,10 +37,10 @@ namespace com.szczuro.slots.data
         public PayOut(int payout, List<int> colors)
         {
             this.colors = colors;
-            this.payout = payout;
+            this.Multiplayer = payout;
         }
 
-        public int payout;
+        public int Multiplayer;
         public List<int> colors;
 
     }

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using NUnit.Framework;
-
-using UnityEditor;
-
 using UnityEngine;
-using UnityEngine.TestTools;
 
 
 namespace com.szczuro.slots.data.tests
@@ -123,9 +116,9 @@ namespace com.szczuro.slots.data.tests
             Assert.AreEqual(p2, slot.Payouts[1].colors);
             Assert.AreEqual(p3, slot.Payouts[2].colors);
 
-            Assert.AreEqual(1, slot.Payouts[0].payout);
-            Assert.AreEqual(2, slot.Payouts[1].payout);
-            Assert.AreEqual(3, slot.Payouts[2].payout);
+            Assert.AreEqual(1, slot.Payouts[0].Multiplayer);
+            Assert.AreEqual(2, slot.Payouts[1].Multiplayer);
+            Assert.AreEqual(3, slot.Payouts[2].Multiplayer);
         }
 
         [Test]
@@ -144,18 +137,5 @@ namespace com.szczuro.slots.data.tests
         }
     }
 
-    class TestHelper
-    {
-        public static T[] GetAllInstances<T>() where T : ScriptableObject
-        {
-            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);  //FindAssets uses tags check documentation for more info
-            T[] a = new T[guids.Length];
-            for (int i = 0; i < guids.Length; i++)         //probably could get optimized 
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                a[i] = AssetDatabase.LoadAssetAtPath<T>(path);
-            }
-            return a;
-        }
-    }
+  
 }

@@ -1,10 +1,24 @@
 ﻿using System.Linq;
-
 using NUnit.Framework;
-
+using UnityEditor;
+using UnityEngine;
 
 namespace com.szczuro.slots.data.tests
 {
+    class TestHelper
+    {
+        public static T[] GetAllInstances<T>() where T : ScriptableObject
+        {
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(T).Name);  //FindAssets uses tags check documentation for more info
+            T[] a = new T[guids.Length];
+            for (int i = 0; i < guids.Length; i++)         //probably could get optimized 
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+                a[i] = AssetDatabase.LoadAssetAtPath<T>(path);
+            }
+            return a;
+        }
+    }
     public class SlotData_Instances_Valid_Configuration: SlotTests
     {
         private SlotData[] sds;
@@ -92,7 +106,6 @@ namespace com.szczuro.slots.data.tests
             }
         }
 
-        
         [Test]
         public void Payouts_Exists_And_Above0()
         {
@@ -102,6 +115,51 @@ namespace com.szczuro.slots.data.tests
                 Assert.GreaterOrEqual(slot.Payouts.Count(), 1);
             }
         }
+
+        [Test]
+        public void Payout_Count_Less_Than_Reels()
+        {
+            foreach (SlotData slot in sds)
+            {
+                Assert.IsNotNull(slot.Payouts);
+                foreach (PayOut p in slot.Payouts)
+                    Assert.LessOrEqual(p.colors.Count, slot.Reels.Count);
+            }
+        }
+
+        [Test]
+        public void Payout_Colors_Count_More_Than1()
+        {
+            foreach (SlotData slot in sds)
+            {
+                Assert.IsNotNull(slot.Payouts);
+                foreach (PayOut p in slot.Payouts)
+                    Assert.Greater(p.colors.Count, 1);
+            }
+        }
+
+        [Test]
+        public void Payout_Multiplayer_Above1()
+        {
+            foreach (SlotData slot in sds)
+            {
+                Assert.IsNotNull(slot.Payouts);
+                foreach (PayOut p in slot.Payouts)
+                    Assert.GreaterOrEqual(p.Multiplayer, 1);
+            }
+        }
+        [Test]
+        public void Payout_StopType_Match_Reel()
+        {
+            foreach (SlotData slot in sds)
+            {
+                Assert.IsNotNull(slot.Payouts);
+                foreach (PayOut p in slot.Payouts)
+                    for (int i=0; i<p.colors.Count;i++)
+                    Assert.IsTrue(slot.Reels[i].colors.Contains(p.colors[i]));
+            }
+        }
+
         [Test]
         public void Payouts_Have_All_StopTypes()
         {
