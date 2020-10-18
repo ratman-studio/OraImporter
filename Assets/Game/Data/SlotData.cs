@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -17,10 +18,19 @@ namespace com.szczuro.slots.data
         // this data is needed to be provided by designer
         public List<string> StopTypes = new List<string>();
         public ReelWheel[] Reels;
+        public List<PayOut> Payouts;
     }
-    [System.Serializable]
-    public class ReelWheel
+    
+    [Serializable]
+    public struct ReelWheel
     {
         public int[] colors;
+    }
+    [Serializable]
+    public struct PayOut
+    {
+        public int payout;
+        public int[] colors;
+
     }
 }

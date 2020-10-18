@@ -16,6 +16,7 @@ namespace com.szczuro.slots.data.tests
     {
         static public SlotData PrepareTestSlot()
         {
+            
             SlotData slot = ScriptableObject.CreateInstance<SlotData>();
             slot.MaxBet = 10;
             slot.MinBet = 5;
@@ -23,10 +24,9 @@ namespace com.szczuro.slots.data.tests
             slot.Paylines = 7;
             slot.StopTypes = new List<string>() { "one", "two", "three", "four" };
 
-            List<int> reel1 = new List<int>() { 1, 2, 3, 4, 1 };
-            List<int> reel2 = new List<int>() { 4, 3, 2, 1, 2 };
-            List<int> reel3 = new List<int>() { 2, 1, 2, 1, 3 };
-            //slot.Reels = new List<List<int>> { reel1, reel2, reel3 };
+            var reel1 = new List<int>() { 1, 2, 3, 4, 1 };
+            var reel2 = new List<int>() { 4, 3, 2, 1, 2 };
+            var reel3 = new List<int>() { 2, 1, 2, 1, 3 };
 
             return slot;
         }
