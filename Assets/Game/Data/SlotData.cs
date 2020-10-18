@@ -17,20 +17,31 @@ namespace com.szczuro.slots.data
 
         // this data is needed to be provided by designer
         public List<string> StopTypes = new List<string>();
-        public ReelWheel[] Reels;
+        public List<ReelWheel> Reels;
         public List<PayOut> Payouts;
     }
     
     [Serializable]
     public struct ReelWheel
     {
-        public int[] colors;
+        public ReelWheel(List<int> colors)
+        {
+            this.colors = colors;
+        }
+
+        public List<int> colors;
     }
     [Serializable]
     public struct PayOut
     {
+        public PayOut(int payout, List<int> colors)
+        {
+            this.colors = colors;
+            this.payout = payout;
+        }
+
         public int payout;
-        public int[] colors;
+        public List<int> colors;
 
     }
 }
