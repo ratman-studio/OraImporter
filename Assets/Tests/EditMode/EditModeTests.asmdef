@@ -6,7 +6,6 @@
         "Game"
     ],
     "includePlatforms": [
-        "CloudRendering",
         "Editor"
     ],
     "excludePlatforms": [],
