@@ -18,7 +18,7 @@ namespace com.szczuro.slots.data
         // this data is needed to be provided by designer
         public List<string> StopTypes = new List<string>();
         public List<ReelWheel> Reels;
-        public List<PayOut> Payouts;
+        public List<PayOut> PayTable;
     }
     
     [Serializable]

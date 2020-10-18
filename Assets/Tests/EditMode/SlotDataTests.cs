@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEngine;
 
 
-namespace com.szczuro.slots.data.tests
+namespace com.szczuro.slots.data
 {
     public class SlotTests
     {
@@ -35,7 +35,7 @@ namespace com.szczuro.slots.data.tests
             var po2 = new PayOut(2, p2);
             var po3 = new PayOut(3, p3);
             
-            slot.Payouts = new List<PayOut>() { po1, po2, po3 };
+            slot.PayTable = new List<PayOut>() { po1, po2, po3 };
 
             return slot;
         }
@@ -57,27 +57,27 @@ namespace com.szczuro.slots.data.tests
         }
 
         [Test]
-        public void SlotData_MaxBet_IsSet()
+        public void MaxBet_IsSet()
         {
             Assert.AreEqual(10, slot.MaxBet);
         }
         [Test]
-        public void SlotData_MinBet_IsSet()
+        public void MinBet_IsSet()
         {
             Assert.AreEqual(5, slot.MinBet);
         }
         [Test]
-        public void SlotData_Name_IsSet()
+        public void Name_IsSet()
         {
             Assert.AreEqual("SlotName", slot.Name);
         }
         [Test]
-        public void SlotData_Paylines_IsSet()
+        public void Paylines_AreSet()
         {
             Assert.AreEqual(7, slot.Paylines);
         }
         [Test]
-        public void SlotData_Stoptypes_IsSet()
+        public void Stoptypes_AreSet()
         {
             Assert.AreNotEqual(null, slot.StopTypes);
             Assert.AreEqual(4, slot.StopTypes.Count);
@@ -87,7 +87,7 @@ namespace com.szczuro.slots.data.tests
             Assert.AreEqual("four", slot.StopTypes[3]);
         }
         [Test]
-        public void SlotData_Reels_IsSet()
+        public void Reels_AreSet()
         {
 
             var l1 = new List<int>() { 1, 2, 3, 4, 1 };
@@ -103,26 +103,26 @@ namespace com.szczuro.slots.data.tests
         }
 
         [Test]
-        public void SlotData_Payouts_IsSet()
+        public void PayTable_IsSet()
         {
             var p1 = new List<int>() { 1, 2, 3, 4, 1 };
             var p2 = new List<int>() { 1, 2, 3, 4, 1 };
             var p3 = new List<int>() { 1, 2, 3, 4, 1 };
 
             Assert.AreNotEqual(null, slot.Reels);
-            Assert.AreEqual(3, slot.Payouts.Count);
+            Assert.AreEqual(3, slot.PayTable.Count);
 
-            Assert.AreEqual(p1, slot.Payouts[0].colors);
-            Assert.AreEqual(p2, slot.Payouts[1].colors);
-            Assert.AreEqual(p3, slot.Payouts[2].colors);
+            Assert.AreEqual(p1, slot.PayTable[0].colors);
+            Assert.AreEqual(p2, slot.PayTable[1].colors);
+            Assert.AreEqual(p3, slot.PayTable[2].colors);
 
-            Assert.AreEqual(1, slot.Payouts[0].Multiplayer);
-            Assert.AreEqual(2, slot.Payouts[1].Multiplayer);
-            Assert.AreEqual(3, slot.Payouts[2].Multiplayer);
+            Assert.AreEqual(1, slot.PayTable[0].Multiplayer);
+            Assert.AreEqual(2, slot.PayTable[1].Multiplayer);
+            Assert.AreEqual(3, slot.PayTable[2].Multiplayer);
         }
 
         [Test]
-        public void SlotData_Empty()
+        public void EmptyData()
         {
             // this data could be changed by designer
             Assert.AreEqual(1, slotEmpty.MaxBet);
@@ -133,10 +133,8 @@ namespace com.szczuro.slots.data.tests
             Assert.AreEqual(null, slotEmpty.Name);
             Assert.AreEqual(0, slotEmpty.StopTypes.Count);
             Assert.AreEqual(null, slotEmpty.Reels, "Reels not found");
-            Assert.AreEqual(null, slotEmpty.Payouts, "Payline not found");
+            Assert.AreEqual(null, slotEmpty.PayTable, "Payline not found");
         }
     }
-    
-
   
 }

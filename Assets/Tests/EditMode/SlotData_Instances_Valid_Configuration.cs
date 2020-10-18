@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace com.szczuro.slots.data.tests
+namespace com.szczuro.slots.data
 {
     class TestHelper
     {
@@ -101,7 +101,7 @@ namespace com.szczuro.slots.data.tests
                 foreach (ReelWheel reel in slot.Reels)
                     foreach (int color in reel.colors)
                     {
-                        Assert.GreaterOrEqual(color,0);
+                        Assert.GreaterOrEqual(color, 0);
                         Assert.Less(color, slot.StopTypes.Count());
                     }
         }
@@ -121,61 +121,61 @@ namespace com.szczuro.slots.data.tests
         }
 
         [Test]
-        public void Payouts_Exists_And_Above0()
+        public void PayTable_Exists_And_Above0()
         {
             foreach (SlotData slot in sds)
             {
-                Assert.IsNotNull(slot.Payouts);
-                Assert.GreaterOrEqual(slot.Payouts.Count(), 1);
+                Assert.IsNotNull(slot.PayTable);
+                Assert.GreaterOrEqual(slot.PayTable.Count(), 1);
             }
         }
 
         [Test]
-        public void Payout_Count_Less_Than_Reels()
+        public void PayOuts_Count_Less_Than_Reels()
         {
             foreach (SlotData slot in sds)
             {
-                Assert.IsNotNull(slot.Payouts);
-                foreach (PayOut p in slot.Payouts)
+                Assert.IsNotNull(slot.PayTable);
+                foreach (PayOut p in slot.PayTable)
                     Assert.LessOrEqual(p.colors.Count, slot.Reels.Count);
             }
         }
 
         [Test]
-        public void Payout_Colors_Count_More_Than1()
+        public void PayOuts_Colors_Count_More_Than1()
         {
             foreach (SlotData slot in sds)
             {
-                Assert.IsNotNull(slot.Payouts);
-                foreach (PayOut p in slot.Payouts)
+                Assert.IsNotNull(slot.PayTable);
+                foreach (PayOut p in slot.PayTable)
                     Assert.Greater(p.colors.Count, 1);
             }
         }
 
         [Test]
-        public void Payout_Multiplayer_Above1()
+        public void PayOuts_Multiplayer_Above1()
         {
             foreach (SlotData slot in sds)
             {
-                Assert.IsNotNull(slot.Payouts);
-                foreach (PayOut p in slot.Payouts)
+                Assert.IsNotNull(slot.PayTable);
+                foreach (PayOut p in slot.PayTable)
                     Assert.GreaterOrEqual(p.Multiplayer, 1);
             }
         }
         [Test]
-        public void Payout_StopType_Match_Reel()
+        public void PayOuts_StopType_Match_Reel()
         {
             foreach (SlotData slot in sds)
             {
-                Assert.IsNotNull(slot.Payouts);
-                foreach (PayOut p in slot.Payouts)
+                Assert.IsNotNull(slot.PayTable);
+                foreach (PayOut p in slot.PayTable)
                     for (int i=0; i<p.colors.Count;i++)
                     Assert.IsTrue(slot.Reels[i].colors.Contains(p.colors[i]));
             }
         }
 
         [Test]
-        public void Payouts_Have_All_StopTypes()
+        public void PayOuts_Have_All_StopTypes()
         {
             foreach (SlotData slot in sds)
                 foreach (string color in slot.StopTypes)
@@ -183,17 +183,17 @@ namespace com.szczuro.slots.data.tests
         }
         private bool SlotPayoutHasColor(SlotData slot, int color)
         {
-            foreach (PayOut peyout in slot.Payouts)
-                if (peyout.colors.Contains(color))
+            foreach (PayOut payout in slot.PayTable)
+                if (payout.colors.Contains(color))
                     return true;
             return false;
         }
 
         [Test]
-        public void Payouts_Have_Only_Colors_From_StopTypes()
+        public void PayOuts_Only_Colors_From_StopTypes()
         {
             foreach (SlotData slot in sds)
-                foreach (PayOut payout in slot.Payouts)
+                foreach (PayOut payout in slot.PayTable)
                     foreach (int color in payout.colors)
                     {
                         Assert.GreaterOrEqual(color, 0);
