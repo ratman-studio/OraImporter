@@ -50,7 +50,7 @@ namespace com.szczuro.slots.data.tests
             }
         }
 
-        private bool SlotHasColor(SlotData slot, int color)
+        private bool SlotReelsHasColor(SlotData slot, int color)
         {
             foreach (ReelWheel reel in slot.Reels)
                 if (reel.colors.Contains(color))
@@ -63,7 +63,7 @@ namespace com.szczuro.slots.data.tests
         {
             foreach (SlotData slot in sds)
                 foreach (string color in slot.StopTypes)
-                    Assert.IsTrue(SlotHasColor(slot, slot.StopTypes.IndexOf(color)));
+                    Assert.IsTrue(SlotReelsHasColor(slot, slot.StopTypes.IndexOf(color)));
         }
 
         [Test]
@@ -92,5 +92,41 @@ namespace com.szczuro.slots.data.tests
             }
         }
 
+        
+        [Test]
+        public void Payouts_Exists_And_Above0()
+        {
+            foreach (SlotData slot in sds)
+            {
+                Assert.IsNotNull(slot.Payouts);
+                Assert.GreaterOrEqual(slot.Payouts.Count(), 1);
+            }
+        }
+        [Test]
+        public void Payouts_Have_All_StopTypes()
+        {
+            foreach (SlotData slot in sds)
+                foreach (string color in slot.StopTypes)
+                    Assert.IsTrue(SlotPayoutHasColor(slot, slot.StopTypes.IndexOf(color)));
+        }
+        private bool SlotPayoutHasColor(SlotData slot, int color)
+        {
+            foreach (PayOut peyout in slot.Payouts)
+                if (peyout.colors.Contains(color))
+                    return true;
+            return false;
+        }
+
+        [Test]
+        public void Payouts_Have_Only_Colors_From_StopTypes()
+        {
+            foreach (SlotData slot in sds)
+                foreach (PayOut payout in slot.Payouts)
+                    foreach (int color in payout.colors)
+                    {
+                        Assert.GreaterOrEqual(color, 0);
+                        Assert.Less(color, slot.StopTypes.Count());
+                    }
+        }
     }
 }
