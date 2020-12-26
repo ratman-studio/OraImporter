@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
-using UnityEditor.Hardware;
 using UnityEngine;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace com.szczuro.importer.ora
 {
@@ -24,7 +15,6 @@ namespace com.szczuro.importer.ora
         }
 
         [SerializeField] private ImportType ImportAs = ImportType.Single;
-        
         private OraFile _oraFile;
         
 
@@ -38,19 +28,20 @@ namespace com.szczuro.importer.ora
             Debug.Log($"Importing Ora Object {path}");
             var fileInfo = new FileInfo(path);
             
-            // Register root prefab that will be visible in project window instead of file
-            var filePrefab = registerMainPrefab(ctx, fileInfo.Name);
-            
-            // dummy file helper
-            Debug.Log("Create Orafile");
+            //file helper
+            Debug.Log($"Create Orafile {_oraFile}");
             _oraFile = new OraFile(path);
+            
+
+            // Register root prefab that will be visible in project window instead of file
+            var filePrefab = registerMainPrefab(ctx, fileInfo.Name, _oraFile.getThumbnail().texture);
             
             // storage place for sprites  
             Debug.Log("Create spritelib");
-            var spritesLib = createSpritesLib();
-            Debug.Log($"SpriteLib length {spritesLib.entries.Count}");
+            var spritesLib = _oraFile.getLayers();
+            Debug.Log($"SpriteLib length {spritesLib.Count}");
+
             //ctx.AddObjectToAsset("spriteLib", spritesLib);
-            
             Debug.Log($"add spriteRenderers to prefab");
             addSpritesToPrefab(ctx, filePrefab, spritesLib);
             
@@ -58,23 +49,9 @@ namespace com.szczuro.importer.ora
             ctx.SetMainObject(filePrefab);
         }
 
-        private SimpleSpriteLib createSpritesLib()
+        private void addSpritesToPrefab(AssetImportContext ctx, GameObject filePrefab, List<Sprite> sprites)
         {
-            var spritesLib = ScriptableObject.CreateInstance<SimpleSpriteLib>();
-            
-            Debug.Log("Storing Sprites in Scriptable Object");
-            var imageList = _oraFile.layers;
-            foreach (var texture in imageList)
-            {
-                Debug.Log($"Storing {texture.name} in {texture.width}x{texture.width} {texture.format}");
-                spritesLib.entries.Add(SpriteFromTexture(texture));
-            }
-            return spritesLib;
-        }
-
-        private void addSpritesToPrefab(AssetImportContext ctx, GameObject filePrefab, SimpleSpriteLib sprites)
-        {
-            foreach (var sprite in sprites.entries)
+            foreach (var sprite in sprites)
             {
                 var texGO = new GameObject(sprite.name);
                 var spriteRenderer = texGO.AddComponent<SpriteRenderer>();
@@ -84,93 +61,16 @@ namespace com.szczuro.importer.ora
                 //texGO.transform.SetParent(filePrefab.transform);
             }
         }
-
         
-        private Sprite SpriteFromTexture(Texture2D texture)
-        {
-            var rect = new Rect(0f, 0f, texture.width, texture.height);
-            var pivot = new Vector2(.5f, .5f);
-            var pixelPerUnit = 100f;
-            var sprite = Sprite.Create(texture, rect, pivot, pixelPerUnit);
-            sprite.name = texture.name;
-            
-            Debug.Log($"converted to sprite {sprite.name} {sprite}"); 
-            return sprite;
-        }
-
-        private static GameObject registerMainPrefab(AssetImportContext ctx, string name)
+        private static GameObject registerMainPrefab(AssetImportContext ctx, string name, Texture2D thumbNail)
         {
             
             var filePrefab = new GameObject($"{name}_GO");
-            ctx.AddObjectToAsset("main", filePrefab);
+            ctx.AddObjectToAsset("main", filePrefab, thumbNail);
             
             return filePrefab;
         }
 
         #endregion
-    }
-
-    [Serializable]
-    public class SimpleSpriteLib:ScriptableObject
-    {
-        [SerializeField]
-        public List<Sprite> entries = new List<Sprite>();
-    }
-
-    [Serializable]
-    class OraFile 
-    {
-        [SerializeField]
-        public List<Texture2D> layers = new List<Texture2D>();
-        public string path;
-
-        public OraFile (string path)
-        {
-            Debug.Log($"Ora import {path}");
-            var textureList = getTextureList(path);
-            foreach (var tex in textureList)
-            {
-                layers.Add(tex);                
-            }
-        }
-
-        #region ZipReader
-
-        private static List<Texture2D> getTextureList(string zipPath)
-        {
-            var archives = new List<Texture2D>();
-            using (var archive = ZipFile.OpenRead(zipPath))
-            {
-                Debug.Log($"{archive.Mode} archive {zipPath}");
-                foreach (var entry in archive.Entries)
-                {
-                    if (entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
-                    {
-                        archives.Add(getTextureFromEntry(entry));
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"skip entry {entry}");
-                    }
-                }
-            }
-            return archives;
-        }
-
-        private static Texture2D getTextureFromEntry(ZipArchiveEntry entry)
-        {
-            var texture = new Texture2D(2, 2);
-            using (var fileStream = entry.Open())
-            {
-                var imageData = new byte[entry.Length];
-                fileStream.Read(imageData, 0, (int) entry.Length);
-                texture.LoadImage(imageData);
-                texture.name = entry.Name;
-            }
-            return texture;
-        }
-
-        #endregion
-
     }
 }
