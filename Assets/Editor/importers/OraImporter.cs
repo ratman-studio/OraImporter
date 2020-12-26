@@ -38,12 +38,27 @@ namespace com.szczuro.importer.ora
             
             oraFile = new OraFile(path);
             
+            AddTexturesToPrefab(filePrefab);
+        }
+
+        private void AddTexturesToPrefab(GameObject filePrefab)
+        {
             var imageList = oraFile.layers;
             foreach (var texture in imageList)
             {
                 var tex_go = new GameObject(texture.name);
+                var spriteRenderer = tex_go.AddComponent<SpriteRenderer>();
+                spriteRenderer.sprite = SpriteFromTexture(texture);
                 tex_go.transform.SetParent(filePrefab.transform);
             }
+        }
+
+        private Sprite SpriteFromTexture(Texture2D texture)
+        {
+            var rect = new Rect(0f, 0f, texture.width, texture.height);
+            var pivot = new Vector2(.5f, .5f);
+            var pixelPerUnit = 100f;
+            return Sprite.Create(texture, rect, pivot, pixelPerUnit);
         }
 
         private static GameObject RegisterMainPrefab(AssetImportContext ctx, string name)
@@ -60,28 +75,22 @@ namespace com.szczuro.importer.ora
 
     class OraFile 
     {
-        public List<Texture2D> layers;
+        public List<Texture2D> layers = new List<Texture2D>();
         public string path;
 
         public OraFile (string path)
         {
             Debug.Log($"Ora import {path}");
-            var zipList = getZipList(path);
-            foreach (var entry in zipList)
+            var textureList = getTextureList(path);
+            foreach (var tex in textureList)
             {
-                //layers.Add(ZipArchiveEntryToTexure2D(entry));                
+                layers.Add(tex);                
             }
-        }
-
-        private Texture2D ZipArchiveEntryToTexure2D(ZipArchiveEntry entry)
-        {
-            Debug.Log($"ZipArch Entry to Tex2d entry: {entry.Name} \n {entry}");
-            return new Texture2D(1, 1);
         }
 
         #region ZipReader
 
-        private static List<Texture2D> getZipList(string zipPath)
+        private static List<Texture2D> getTextureList(string zipPath)
         {
             var archives = new List<Texture2D>();
             using (var archive = ZipFile.OpenRead(zipPath))
@@ -89,29 +98,34 @@ namespace com.szczuro.importer.ora
                 Debug.Log($"open archive {archive.Mode} {zipPath}");
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    Debug.Log($"parse entry {entry}");
                     
-                    var texture = new Texture2D(2, 2);
-                    //using (var  fileStream =  new FileStream(entry.FullName, FileMode.OpenOrCreate, FileAccess.Read))
-                    
-                    using (var fileStream = entry.Open())
+                    if (entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                     {
-                        Debug.Log(entry.Length);
-                        Debug.Log(entry.Archive);
-                        
-                        //Debug.Log(getMimeFromStream(new FileStream(fileStream, FileAccess.Read)));
-                        // Debug.Log($"fileStream {fileStream} ");
-                        byte[] imageData = new byte[entry.Length];
-                        fileStream.Read(imageData, 0, (int) entry.Length);
-                        texture.LoadImage(imageData);
-                        archives.Add(texture);
-                        Debug.Log($"fileStream complete {texture.format} ");
+                        Debug.Log($"parse entry {entry}");
+                        archives.Add(getTextureFromEntry(entry));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"skip entry {entry}");
                     }
                 }
             }
             return archives;
         }
-       
+
+        private static Texture2D getTextureFromEntry(ZipArchiveEntry entry)
+        {
+            var texture = new Texture2D(2, 2);
+            using (var fileStream = entry.Open())
+            {
+                var imageData = new byte[entry.Length];
+                fileStream.Read(imageData, 0, (int) entry.Length);
+                texture.LoadImage(imageData);
+                texture.name = entry.Name;
+            }
+            return texture;
+        }
+
         #endregion
 
     }
