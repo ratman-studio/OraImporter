@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
@@ -12,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace com.szczuro.importer.ora
 {
-    [ScriptedImporter(2, "ora")]
+    [ScriptedImporter(1, "ora")]
     public class OraImporter : ScriptedImporter
     {
         enum ImportType
@@ -22,7 +24,9 @@ namespace com.szczuro.importer.ora
         }
 
         [SerializeField] private ImportType ImportAs = ImportType.Single;
-        private OraFile oraFile;
+        
+        private OraFile _oraFile;
+        
 
         #region ScriptedImporter implementation
 
@@ -34,47 +38,89 @@ namespace com.szczuro.importer.ora
             Debug.Log($"Importing Ora Object {path}");
             var fileInfo = new FileInfo(path);
             
-            var filePrefab = RegisterMainPrefab(ctx, fileInfo.Name);
+            // Register root prefab that will be visible in project window instead of file
+            var filePrefab = registerMainPrefab(ctx, fileInfo.Name);
             
-            oraFile = new OraFile(path);
+            // dummy file helper
+            Debug.Log("Create Orafile");
+            _oraFile = new OraFile(path);
             
-            AddTexturesToPrefab(filePrefab);
+            // storage place for sprites  
+            Debug.Log("Create spritelib");
+            var spritesLib = createSpritesLib();
+            Debug.Log($"SpriteLib length {spritesLib.entries.Count}");
+            //ctx.AddObjectToAsset("spriteLib", spritesLib);
+            
+            Debug.Log($"add spriteRenderers to prefab");
+            addSpritesToPrefab(ctx, filePrefab, spritesLib);
+            
+            Debug.Log($"set main prefab");
+            ctx.SetMainObject(filePrefab);
         }
 
-        private void AddTexturesToPrefab(GameObject filePrefab)
+        private SimpleSpriteLib createSpritesLib()
         {
-            var imageList = oraFile.layers;
+            var spritesLib = ScriptableObject.CreateInstance<SimpleSpriteLib>();
+            
+            Debug.Log("Storing Sprites in Scriptable Object");
+            var imageList = _oraFile.layers;
             foreach (var texture in imageList)
             {
-                var tex_go = new GameObject(texture.name);
-                var spriteRenderer = tex_go.AddComponent<SpriteRenderer>();
-                spriteRenderer.sprite = SpriteFromTexture(texture);
-                tex_go.transform.SetParent(filePrefab.transform);
+                Debug.Log($"Storing {texture.name} in {texture.width}x{texture.width} {texture.format}");
+                spritesLib.entries.Add(SpriteFromTexture(texture));
+            }
+            return spritesLib;
+        }
+
+        private void addSpritesToPrefab(AssetImportContext ctx, GameObject filePrefab, SimpleSpriteLib sprites)
+        {
+            foreach (var sprite in sprites.entries)
+            {
+                var texGO = new GameObject(sprite.name);
+                var spriteRenderer = texGO.AddComponent<SpriteRenderer>();
+                spriteRenderer.sprite = sprite;
+                Debug.Log(spriteRenderer.sprite);
+                ctx.AddObjectToAsset(sprite.name,sprite);
+                //texGO.transform.SetParent(filePrefab.transform);
             }
         }
 
+        
         private Sprite SpriteFromTexture(Texture2D texture)
         {
             var rect = new Rect(0f, 0f, texture.width, texture.height);
             var pivot = new Vector2(.5f, .5f);
             var pixelPerUnit = 100f;
-            return Sprite.Create(texture, rect, pivot, pixelPerUnit);
+            var sprite = Sprite.Create(texture, rect, pivot, pixelPerUnit);
+            sprite.name = texture.name;
+            
+            Debug.Log($"converted to sprite {sprite.name} {sprite}"); 
+            return sprite;
         }
 
-        private static GameObject RegisterMainPrefab(AssetImportContext ctx, string name)
+        private static GameObject registerMainPrefab(AssetImportContext ctx, string name)
         {
+            
             var filePrefab = new GameObject($"{name}_GO");
-            Debug.Log($"Register Main Object {filePrefab.name}");
             ctx.AddObjectToAsset("main", filePrefab);
-            ctx.SetMainObject(filePrefab);
+            
             return filePrefab;
         }
 
         #endregion
     }
 
+    [Serializable]
+    public class SimpleSpriteLib:ScriptableObject
+    {
+        [SerializeField]
+        public List<Sprite> entries = new List<Sprite>();
+    }
+
+    [Serializable]
     class OraFile 
     {
+        [SerializeField]
         public List<Texture2D> layers = new List<Texture2D>();
         public string path;
 
@@ -95,13 +141,11 @@ namespace com.szczuro.importer.ora
             var archives = new List<Texture2D>();
             using (var archive = ZipFile.OpenRead(zipPath))
             {
-                Debug.Log($"open archive {archive.Mode} {zipPath}");
-                foreach (ZipArchiveEntry entry in archive.Entries)
+                Debug.Log($"{archive.Mode} archive {zipPath}");
+                foreach (var entry in archive.Entries)
                 {
-                    
                     if (entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                     {
-                        Debug.Log($"parse entry {entry}");
                         archives.Add(getTextureFromEntry(entry));
                     }
                     else
