@@ -34,7 +34,7 @@ namespace com.szczuro.importer.ora
             
 
             // Register root prefab that will be visible in project window instead of file
-            var filePrefab = registerMainPrefab(ctx, fileInfo.Name, _oraFile.getThumbnail().texture);
+            var filePrefab = registerMainPrefab(ctx, fileInfo.Name, _oraFile.getThumbnailSprite().texture);
             
             // storage place for sprites  
             Debug.Log("Create spritelib");
