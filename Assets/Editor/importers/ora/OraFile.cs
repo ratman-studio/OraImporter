@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO.Compression;
-using System.Xml;
-using System.Xml.Schema;
 using System.Xml.Serialization;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace com.szczuro.importer.ora
 {
@@ -18,8 +14,7 @@ namespace com.szczuro.importer.ora
     // </stack>
     // </image>
 
-    
-    
+
     public class Ora
     {
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction
@@ -28,7 +23,7 @@ namespace com.szczuro.importer.ora
             Visible,
             Hidden
         }
-        
+
         // ora blending functio as in specification
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction
         public enum Blending
@@ -59,7 +54,7 @@ namespace com.szczuro.importer.ora
             SourceAtop,
             DestinationAtop
         }
-        
+
         // cpmpositie-op strings  
         private const string SrcOver = "svg:src-over"; // Normal, Source Over
         private const string Multiply = "svg:multiply"; // Multiply, Source Over
@@ -81,7 +76,7 @@ namespace com.szczuro.importer.ora
         private const string DstOut = "svg:dst-out"; // Normal, Destination Out
         private const string SrcAtop = "svg:src-atop"; // Normal, Source Atop
         private const string DstAtop = "svg:dst-atop"; // Normal, Destination Atop
-        
+
         // cpmpositie to blending map 
         private static Dictionary<string, Blending> blending_dict = new Dictionary<string, Blending>()
         {
@@ -107,7 +102,7 @@ namespace com.szczuro.importer.ora
             {DstAtop, Blending.Normal}
         };
 
-        
+
         public static Blending getBlendingFromCompositeOp(string composite)
         {
             var result = Blending.Normal;
@@ -124,7 +119,7 @@ namespace com.szczuro.importer.ora
                 case DstOut: return Compositing.DestinationOut;
                 case SrcAtop: return Compositing.SourceAtop;
                 case DstAtop: return Compositing.DestinationAtop;
-                
+
                 default:
                     return Compositing.SourceOver;
             }
@@ -134,42 +129,31 @@ namespace com.szczuro.importer.ora
     [XmlRoot("image")]
     public class OraXMLImage
     {
-        [XmlAttribute("version")]
-        public string Version;
-        [XmlAttribute("yres")]
-        public int YRes;
-        [XmlAttribute("xres")]
-        public int XRes;
-        [XmlAttribute("w")]
-        public int Width;
-        [XmlAttribute("h")]
-        public int Height;
-        
-        [XmlElement("stack")]
-        public OraXMLStack stack;
+        [XmlAttribute("version")] public string Version;
+        [XmlAttribute("yres")] public int YRes;
+        [XmlAttribute("xres")] public int XRes;
+        [XmlAttribute("w")] public int Width;
+        [XmlAttribute("h")] public int Height;
+
+        [XmlElement("stack")] public OraXMLStack stack;
+
         public struct OraXMLStack
         {
-            [XmlAttribute("name")]
-            public string Name;
-            [XmlAttribute("opacity")]
-            public float Opacity;
-            [XmlAttribute("x")]
-            public int X;
+            [XmlAttribute("name")] public string Name;
+            [XmlAttribute("opacity")] public float Opacity;
+            [XmlAttribute("x")] public int X;
 
-            [XmlAttribute("y")]
-            public int Y;
-            
-            [XmlAttribute("visibility")]
-            private string _visibility;
-        
+            [XmlAttribute("y")] public int Y;
+
+            [XmlAttribute("visibility")] private string _visibility;
+
             public Ora.Visibility Visibility
             {
-                get =>_visibility.Equals("visible") ? Ora.Visibility.Visible : Ora.Visibility.Hidden;
+                get => _visibility.Equals("visible") ? Ora.Visibility.Visible : Ora.Visibility.Hidden;
                 set => _visibility = value == Ora.Visibility.Visible ? "visible" : "hidden";
             }
 
-            [XmlAttribute("composite-op")]
-            private string compositeOp;
+            [XmlAttribute("composite-op")] private string compositeOp;
         }
 
         struct LayerTag
@@ -188,13 +172,19 @@ namespace com.szczuro.importer.ora
     [Serializable]
     internal class OraFile : IMultiLayerFile
     {
+        public static OraFile CreateInstance(string path)
+        {
+            return new OraFile(path);
+        }
+
         [SerializeField] public List<Sprite> layers = new List<Sprite>();
         [SerializeField] private Sprite thumbnail;
         [SerializeField] private Sprite mergedLayers;
 
         private const string ThumbnailName = "thumbnail.png";
         private const string MergeLayersName = "mergedimage.png";
-        public OraFile(string path)
+
+        private OraFile(string path)
         {
             Debug.Log($"Ora import {path}");
             var textureList = getTextureList(path);
