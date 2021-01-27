@@ -18,7 +18,9 @@ namespace com.szczuro.importer.ora
     // </stack>
     // </image>
 
-    public static class Ora
+    
+    
+    public class Ora
     {
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction
         public enum Visibility
@@ -175,9 +177,16 @@ namespace com.szczuro.importer.ora
         }
     }
 
+    internal interface IMultiLayerFile
+    {
+        Sprite getThumbnailSprite();
+        Sprite getMergedLayers();
+        List<Sprite> getLayers();
+    }
+
     /// <summary> this class unzip ora file and parse all items and provide ILayeredImageFile </summary>
     [Serializable]
-    internal class OraFile
+    internal class OraFile : IMultiLayerFile
     {
         [SerializeField] public List<Sprite> layers = new List<Sprite>();
         [SerializeField] private Sprite thumbnail;
@@ -185,7 +194,6 @@ namespace com.szczuro.importer.ora
 
         private const string ThumbnailName = "thumbnail.png";
         private const string MergeLayersName = "mergedimage.png";
-
         public OraFile(string path)
         {
             Debug.Log($"Ora import {path}");
