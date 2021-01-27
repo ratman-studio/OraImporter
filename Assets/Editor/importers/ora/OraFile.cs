@@ -15,7 +15,7 @@ namespace com.szczuro.importer.ora
     // </image>
 
 
-    public class Ora
+    public static class Ora
     {
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction
         public enum Visibility
@@ -24,7 +24,7 @@ namespace com.szczuro.importer.ora
             Hidden
         }
 
-        // ora blending functio as in specification
+        // ora blending function as in specification
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction
         public enum Blending
         {
@@ -55,7 +55,7 @@ namespace com.szczuro.importer.ora
             DestinationAtop
         }
 
-        // cpmpositie-op strings  
+        // composite-op strings  
         private const string SrcOver = "svg:src-over"; // Normal, Source Over
         private const string Multiply = "svg:multiply"; // Multiply, Source Over
         private const string Screen = "svg:screen"; // Screen, Source Over
@@ -77,8 +77,8 @@ namespace com.szczuro.importer.ora
         private const string SrcAtop = "svg:src-atop"; // Normal, Source Atop
         private const string DstAtop = "svg:dst-atop"; // Normal, Destination Atop
 
-        // cpmpositie to blending map 
-        private static Dictionary<string, Blending> blending_dict = new Dictionary<string, Blending>()
+        // composite to blending map 
+        private static readonly Dictionary<string, Blending> BlendingDict = new Dictionary<string, Blending>()
         {
             {SrcOver, Blending.Normal},
             {Multiply, Blending.Multiply},
@@ -103,14 +103,13 @@ namespace com.szczuro.importer.ora
         };
 
 
-        public static Blending getBlendingFromCompositeOp(string composite)
+        public static Blending GETBlendingFromCompositeOp(string composite)
         {
-            var result = Blending.Normal;
-            blending_dict.TryGetValue(composite, out result);
+            BlendingDict.TryGetValue(composite, out var result);
             return result;
         }
 
-        public static Compositing getCompositingOperatorFromCompositeOp(string compositeOp)
+        public static Compositing GETCompositingOperatorFromCompositeOp(string compositeOp)
         {
             switch (compositeOp)
             {
@@ -135,7 +134,7 @@ namespace com.szczuro.importer.ora
         [XmlAttribute("w")] public int Width;
         [XmlAttribute("h")] public int Height;
 
-        [XmlElement("stack")] public OraXMLStack stack;
+        [XmlElement("stack")] public OraXMLStack Stack;
 
         public struct OraXMLStack
         {
@@ -153,7 +152,7 @@ namespace com.szczuro.importer.ora
                 set => _visibility = value == Ora.Visibility.Visible ? "visible" : "hidden";
             }
 
-            [XmlAttribute("composite-op")] private string compositeOp;
+            [XmlAttribute("composite-op")] private string _compositeOp;
         }
 
         struct LayerTag
@@ -161,13 +160,7 @@ namespace com.szczuro.importer.ora
         }
     }
 
-    internal interface IMultiLayerFile
-    {
-        Sprite getThumbnailSprite();
-        Sprite getMergedLayers();
-        List<Sprite> getLayers();
-    }
-
+    
     /// <summary> this class unzip ora file and parse all items and provide ILayeredImageFile </summary>
     [Serializable]
     internal class OraFile : IMultiLayerFile
@@ -187,37 +180,37 @@ namespace com.szczuro.importer.ora
         private OraFile(string path)
         {
             Debug.Log($"Ora import {path}");
-            var textureList = getTextureList(path);
+            var textureList = GETTextureList(path);
             foreach (var tex in textureList) layers.Add(SpriteFromTexture(tex));
 
             //spritesLib = GenerateSpriteList(layers);
-            thumbnail = findSpriteByName(ThumbnailName);
-            mergedLayers = findSpriteByName(MergeLayersName);
+            thumbnail = FindSpriteByName(ThumbnailName);
+            mergedLayers = FindSpriteByName(MergeLayersName);
         }
 
-        public Sprite getThumbnailSprite()
+        public Sprite GETThumbnailSprite()
         {
             if (thumbnail == null)
             {
                 Debug.LogWarning("Thumbnail not found searching ... ");
-                thumbnail = findSpriteByName(ThumbnailName);
+                thumbnail = FindSpriteByName(ThumbnailName);
             }
 
             return thumbnail;
         }
 
-        public Sprite getMergedLayers()
+        public Sprite GETMergedLayers()
         {
             if (mergedLayers == null)
             {
                 Debug.LogWarning("Merged Layers not found searching ...");
-                mergedLayers = findSpriteByName(MergeLayersName);
+                mergedLayers = FindSpriteByName(MergeLayersName);
             }
 
             return mergedLayers;
         }
 
-        private Sprite findSpriteByName(string imageName)
+        private Sprite FindSpriteByName(string imageName)
         {
             foreach (var sprite in layers)
                 if (sprite.name == imageName)
@@ -226,7 +219,7 @@ namespace com.szczuro.importer.ora
             return null;
         }
 
-        public List<Sprite> getLayers()
+        public List<Sprite> GETLayers()
         {
             return layers;
         }
@@ -245,7 +238,7 @@ namespace com.szczuro.importer.ora
 
         #region ZipReader
 
-        private static List<Texture2D> getTextureList(string zipPath)
+        private static List<Texture2D> GETTextureList(string zipPath)
         {
             var archives = new List<Texture2D>();
             using (var archive = ZipFile.OpenRead(zipPath))
@@ -253,7 +246,7 @@ namespace com.szczuro.importer.ora
                 Debug.Log($"{archive.Mode} archive {zipPath}");
                 foreach (var entry in archive.Entries)
                     if (entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
-                        archives.Add(getTextureFromEntry(entry));
+                        archives.Add(GETTextureFromEntry(entry));
                     else
                         Debug.LogWarning($"skip entry {entry}");
             }
@@ -261,7 +254,7 @@ namespace com.szczuro.importer.ora
             return archives;
         }
 
-        private static Texture2D getTextureFromEntry(ZipArchiveEntry entry)
+        private static Texture2D GETTextureFromEntry(ZipArchiveEntry entry)
         {
             var texture = new Texture2D(2, 2);
             using (var fileStream = entry.Open())

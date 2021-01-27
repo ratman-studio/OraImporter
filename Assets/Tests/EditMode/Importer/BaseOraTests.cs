@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using com.szczuro.importer.ora;
 using NUnit.Framework;
-using UnityEngine;
+
 
 namespace com.szczuro.OraImport.Test
 {
@@ -16,7 +16,7 @@ namespace com.szczuro.OraImport.Test
             var notValidCompositeOp = "svg:not-valid";
 
             //ACT
-            var blending = Ora.getBlendingFromCompositeOp(notValidCompositeOp);
+            var blending = Ora.GETBlendingFromCompositeOp(notValidCompositeOp);
             //ASSERT
             Assert.AreEqual(blending, Ora.Blending.Normal);
         }
@@ -27,7 +27,7 @@ namespace com.szczuro.OraImport.Test
             //ARRANGE
             var notValidCompositeOp = "svg:not-valid";
             //ACT
-            var compositing = Ora.getCompositingOperatorFromCompositeOp(notValidCompositeOp);
+            var compositing = Ora.GETCompositingOperatorFromCompositeOp(notValidCompositeOp);
             //ASSERT
             Assert.AreEqual(compositing, Ora.Compositing.SourceOver);
         }

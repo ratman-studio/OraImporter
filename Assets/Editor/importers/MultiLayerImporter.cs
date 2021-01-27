@@ -25,11 +25,11 @@ namespace com.szczuro.importer
 
 
             // Register root prefab that will be visible in project window instead of file
-            var filePrefab = registerMainPrefab(ctx, fileInfo.Name, _multiLayerFile.getThumbnailSprite().texture);
+            var filePrefab = RegisterMainPrefab(ctx, fileInfo.Name, _multiLayerFile.GETThumbnailSprite().texture);
 
             // storage place for sprites  
-            Debug.Log("Create spritelib");
-            var spritesLib = _multiLayerFile.getLayers();
+            Debug.Log("Create sprites lib");
+            var spritesLib = _multiLayerFile.GETLayers();
             Debug.Log($"SpriteLib length {spritesLib.Count}");
 
             //ctx.AddObjectToAsset("spriteLib", spritesLib);
@@ -55,7 +55,7 @@ namespace com.szczuro.importer
             }
         }
 
-        private static GameObject registerMainPrefab(AssetImportContext ctx, string name, Texture2D thumbNail)
+        private static GameObject RegisterMainPrefab(AssetImportContext ctx, string name, Texture2D thumbNail)
         {
             var filePrefab = new GameObject($"{name}_GO");
             ctx.AddObjectToAsset("main", filePrefab, thumbNail);

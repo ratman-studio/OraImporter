@@ -1,4 +1,6 @@
-﻿using com.szczuro.importer.ora;
+﻿using System.Collections.Generic;
+using com.szczuro.importer.ora;
+using UnityEngine;
 
 namespace com.szczuro.importer
 {
@@ -9,4 +11,12 @@ namespace com.szczuro.importer
             return OraFile.CreateInstance(path);
         }
     }
+    
+    internal interface IMultiLayerFile
+    {
+        Sprite GETThumbnailSprite();
+        Sprite GETMergedLayers();
+        List<Sprite> GETLayers();
+    }
+
 }
