@@ -2,57 +2,48 @@
 using System.IO;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
-using UnityEditor.Experimental.TerrainAPI;
 using UnityEngine;
-using static com.szczuro.importer.ora.OraImporter;
 
 namespace com.szczuro.importer.ora
 {
-    [ScriptedImporter(1, "ora")]
-    public class OraImporter : ScriptedImporter
+   
+    public class MultiLayerImporter : ScriptedImporter
     {
-        public enum ImportType
-        {
-            Single,
-            Multi
-        }
-
         [SerializeField] public ImportType ImportAs = ImportType.Single;
-        private OraFile _oraFile;
-        
-
-        #region ScriptedImporter implementation
+        private IMultiLayerFile _multiLayerFile;
 
         public override void OnImportAsset(AssetImportContext ctx)
         {
             if (ctx == null) return;
 
             var path = ctx.assetPath;
-            Debug.Log($"Importing Ora Object {path}");
+            Debug.Log($"Importing Object {path}");
             var fileInfo = new FileInfo(path);
             
             //file helper
-            Debug.Log($"Create Orafile {_oraFile}");
-            _oraFile = new OraFile(path);
+            Debug.Log($"Create file {_multiLayerFile}");
+            _multiLayerFile = new OraFile(path);
             
 
             // Register root prefab that will be visible in project window instead of file
-            var filePrefab = registerMainPrefab(ctx, fileInfo.Name, _oraFile.getThumbnailSprite().texture);
+            var filePrefab = registerMainPrefab(ctx, fileInfo.Name, _multiLayerFile.getThumbnailSprite().texture);
             
             // storage place for sprites  
             Debug.Log("Create spritelib");
-            var spritesLib = _oraFile.getLayers();
+            var spritesLib = _multiLayerFile.getLayers();
             Debug.Log($"SpriteLib length {spritesLib.Count}");
 
             //ctx.AddObjectToAsset("spriteLib", spritesLib);
             Debug.Log($"add spriteRenderers to prefab");
-            addSpritesToPrefab(ctx, filePrefab, spritesLib);
+            addSpritesToPrefab(ctx, spritesLib);
             
             Debug.Log($"set main prefab");
             ctx.SetMainObject(filePrefab);
         }
 
-        private void addSpritesToPrefab(AssetImportContext ctx, GameObject filePrefab, List<Sprite> sprites)
+        #region ScriptedImporter implementation
+        
+        private void addSpritesToPrefab(AssetImportContext ctx, List<Sprite> sprites)
         {
             foreach (var sprite in sprites)
             {
@@ -73,8 +64,19 @@ namespace com.szczuro.importer.ora
             
             return filePrefab;
         }
-
+        public enum ImportType
+        {
+            Single,
+            Multi
+        }
+        
         #endregion
+    }
+
+    [ScriptedImporter(1, "ora")]
+    public class OraImporter : MultiLayerImporter
+    {
+
     }
 
     [CustomEditor(typeof(OraImporter))]
@@ -97,13 +99,13 @@ namespace com.szczuro.importer.ora
                 GUITexts.ImportTypeOptions, GUITexts.ImportTypeValues);
             EditorGUI.showMixedValue = false;
 
-            switch ((ImportType)ImportAs.intValue)
+            switch ((MultiLayerImporter.ImportType)ImportAs.intValue)
             {
-                case ImportType.Multi :
+                case MultiLayerImporter.ImportType.Multi :
                     EditorGUILayout.LabelField("Layers");
                     MultiLayerImportGUI();
                     break;;
-                case ImportType.Single:
+                case MultiLayerImporter.ImportType.Single:
                 default:
                     EditorGUILayout.LabelField("Single");
                     SingleImageImportGUI();
@@ -135,8 +137,8 @@ namespace com.szczuro.importer.ora
         };
         public static int[] ImportTypeValues =
         {
-            (int) ImportType.Single,
-            (int) ImportType.Multi
+            (int) MultiLayerImporter.ImportType.Single,
+            (int) MultiLayerImporter.ImportType.Multi
         };
     }
 
