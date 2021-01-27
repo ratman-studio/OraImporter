@@ -4,12 +4,6 @@ using UnityEngine;
 
 namespace com.szczuro.importer.ora
 {
-    [ScriptedImporter(1, "ora")]
-    public class OraImporter : MultiLayerImporter
-    {
-    }
-
-
     [CustomEditor(typeof(OraImporter))]
     public class OraImporterEditor : ScriptedImporterEditor
     {

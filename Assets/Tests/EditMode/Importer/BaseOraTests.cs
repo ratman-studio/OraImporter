@@ -55,7 +55,7 @@ namespace com.szczuro.OraImport.Test
             //ARRANGE
             var serializer = new XmlSerializer(typeof(OraXMLImage));
             OraXMLImage i;
-            var filename = "Assets/Tests/EditMode/Ora/stack.xml";
+            var filename = "Assets/Tests/EditMode/Importer/files/ora/stack.xml";
 
             //ACT
             using (Stream reader = new FileStream(filename, FileMode.Open))
