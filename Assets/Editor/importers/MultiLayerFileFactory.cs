@@ -4,15 +4,15 @@ using UnityEngine;
 
 namespace com.szczuro.importer
 {
-    internal static class MultiLayerFileFactory
+    public static class MultiLayerFileFactory
     {
-        internal static IMultiLayerFile CreteFileFromPath(string path)
+        public static IMultiLayerFile CreteFileFromPath(string path)
         {
             return OraFile.CreateInstance(path);
         }
     }
-    
-    internal interface IMultiLayerFile
+
+    public interface IMultiLayerFile
     {
         Sprite GETThumbnailSprite();
         Sprite GETMergedLayers();

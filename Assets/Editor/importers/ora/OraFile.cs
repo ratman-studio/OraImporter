@@ -126,7 +126,7 @@ namespace com.szczuro.importer.ora
     }
 
     [XmlRoot("image")]
-    public class OraXMLImage
+    public class OraXMLStack
     {
         [XmlAttribute("version")] public string Version;
         [XmlAttribute("yres")] public int YRes;
@@ -134,9 +134,9 @@ namespace com.szczuro.importer.ora
         [XmlAttribute("w")] public int Width;
         [XmlAttribute("h")] public int Height;
 
-        [XmlElement("stack")] public OraXMLStack Stack;
+        [XmlElement("stack")] public OraXMLLayer Layer;
 
-        public struct OraXMLStack
+        public struct OraXMLLayer
         {
             [XmlAttribute("name")] public string Name;
             [XmlAttribute("opacity")] public float Opacity;
@@ -180,6 +180,7 @@ namespace com.szczuro.importer.ora
         private OraFile(string path)
         {
             Debug.Log($"Ora import {path}");
+            OraXMLStack structure = GetStructure(path);
             var textureList = GETTextureList(path);
             foreach (var tex in textureList) layers.Add(SpriteFromTexture(tex));
 
@@ -187,6 +188,8 @@ namespace com.szczuro.importer.ora
             thumbnail = FindSpriteByName(ThumbnailName);
             mergedLayers = FindSpriteByName(MergeLayersName);
         }
+
+        
 
         public Sprite GETThumbnailSprite()
         {
@@ -238,6 +241,34 @@ namespace com.szczuro.importer.ora
 
         #region ZipReader
 
+        private static OraXMLStack GetStructure(string zipPath)
+        {
+            
+            using (var archive = ZipFile.OpenRead(zipPath))
+            {
+                Debug.Log($"{archive.Mode} archive {zipPath}");
+                foreach (var entry in archive.Entries)
+                    if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                        return GetXMLFromEntry(entry);
+                    else
+                        Debug.LogWarning($"skip entry {entry}");
+            }
+
+            return null;
+        }
+        
+        private static OraXMLStack GetXMLFromEntry(ZipArchiveEntry entry)
+        {
+            
+            var serializer = new XmlSerializer(typeof(OraXMLStack));
+            using (var fileStream = entry.Open())
+            {
+                return (OraXMLStack) serializer.Deserialize(fileStream);
+                
+            }
+        }
+
+        
         private static List<Texture2D> GETTextureList(string zipPath)
         {
             var archives = new List<Texture2D>();

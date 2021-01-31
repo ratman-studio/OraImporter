@@ -1,10 +1,10 @@
-<image version="0.0.1" yres="100" xres="100" w="128" h="128">
- <stack opacity="1" composite-op="svg:src-over" y="0" name="root" isolation="isolate" visibility="visible" x="0">
-  <layer opacity="1" composite-op="svg:src-over" y="3" name="Layer 14" src="data/layer5.png" visibility="visible" x="14" selected="true"/>
-  <layer opacity="1" composite-op="svg:src-over" y="13" name="Layer 13" src="data/layer4.png" visibility="hidden" x="20"/>
-  <layer opacity="1" composite-op="svg:src-over" y="16" name="Layer 12" src="data/layer3.png" visibility="hidden" x="23"/>
-  <layer opacity="1" composite-op="svg:src-over" y="16" name="Layer 11" src="data/layer2.png" visibility="hidden" x="27"/>
-  <layer opacity="1" composite-op="svg:src-over" y="25" name="Layer 2" src="data/layer1.png" visibility="hidden" x="25"/>
-  <layer opacity="1" composite-op="svg:src-over" y="0" name="Background" src="data/layer0.png" visibility="visible" x="0"/>
+<image w="128" yres="100" h="128" version="0.0.1" xres="100">
+ <stack name="root" isolation="isolate" visibility="visible" y="0" x="0" composite-op="svg:src-over" opacity="1">
+  <layer name="bell" visibility="visible" y="3" x="14" composite-op="svg:src-over" opacity="1" src="data/layer5.png"/>
+  <layer name="heart" visibility="visible" y="13" x="20" composite-op="svg:src-over" opacity="1" src="data/layer4.png"/>
+  <layer name="diamond" visibility="visible" y="16" x="23" composite-op="svg:src-over" opacity="1" src="data/layer3.png"/>
+  <layer name="spades" visibility="visible" y="16" x="27" composite-op="svg:src-over" opacity="1" src="data/layer2.png"/>
+  <layer name="horsShoe" visibility="visible" y="25" x="25" composite-op="svg:src-over" opacity="1" selected="true" src="data/layer1.png"/>
+  <layer name="Background" visibility="visible" y="0" x="0" composite-op="svg:src-over" opacity="1" src="data/layer0.png"/>
  </stack>
 </image>

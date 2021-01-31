@@ -7,30 +7,30 @@ namespace com.szczuro.slots.info
 {
     class SlotInfoBase_Test
     {
-        static public SlotInfoBase PrepareEmptySlotInfo()
+        private static SlotInfoBase PrepareEmptySlotInfo()
         {
-            var slotEmptyData = SlotDataTest.PrepareEmptySlotData();
+            var slotEmptyData = SlotTests.PrepareEmptySlotData();
             return new SlotInfoBase(slotEmptyData);
         }
 
-        ISlotInfo infoEmpty;
-        ISlotInfo info;
+        ISlotInfo _infoEmpty;
+        ISlotInfo _info;
         [SetUp]
         public void BeforeTest()
         {
-            infoEmpty = PrepareEmptySlotInfo();
+            _infoEmpty = PrepareEmptySlotInfo();
         }
 
         [Test]
         public void EmptyCreated()
         {
-            Assert.IsNotNull(infoEmpty);
+            Assert.IsNotNull(_infoEmpty);
         }
 
         [Test]
         public void EmptyBase_StatsAre0()
         {
-            Assert.AreEqual(infoEmpty.TotalWaysToWin,1f);
+            Assert.AreEqual(_infoEmpty.TotalWaysToWin,1f);
             
             
 
@@ -38,13 +38,13 @@ namespace com.szczuro.slots.info
         [Test]
         public void InfoCreated()
         {
-            Assert.IsNotNull(info);
+            Assert.IsNotNull(_info);
         }
 
         [Test]
         public void WaysToWin_IsAbove0()
         {
-            Assert.Greater(info.WaysToWin, 0);
+            Assert.Greater(_info.WaysToWin, 0);
         }
     }
 
