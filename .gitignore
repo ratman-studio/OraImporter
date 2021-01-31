@@ -2,11 +2,62 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/Library
-/obj/Debug
-/Logs
-/Temp
+# OS Generated
+# ============
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+ios
+ios.app
+
+
+# ---------------[ Unity generated ]------------------ #
+**/[Ll]ibrary/*
+**/[Ll]ogs/*
+**/[Tt]emp/*
+**/[Oo]bj/*
+**/[Bb]uild/*
+**/[Bb]uilds/*
+**/UnityGenerated/*
+**/Assets/AssetStoreTools*
+
+# Builds
+*.apk
+*.unitypackage
+
 /Packages
-/.vs/SlotMachine/v16
-*.csproj
 /SlotMachine.sln
+/CodeCoverage/
+
+# ----[ Visual Studio / MonoDevelop generated ]------- #
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.pidb.meta
+*.booproj
+*.svd
+/.vs/
+
+# --- idea
+/.idea/
+
+# include meta files
+!*.*.meta
+
+#Temporary 
+*.psb*
+*.psd*
+*.kra*
+
