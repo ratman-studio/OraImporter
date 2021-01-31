@@ -49,8 +49,8 @@ namespace com.szczuro.OraImport.Test
         public void simple_stackXml_parsing_test()
         {
             //ARRANGE
-            var serializer = new XmlSerializer(typeof(OraXMLStack));
-            OraXMLStack i;
+            var serializer = new XmlSerializer(typeof(OraXMLMain));
+            OraXMLMain i;
             var filename = "Assets/Tests/EditMode/Importer/files/ora/stack.xml";
             
 
@@ -58,7 +58,7 @@ namespace com.szczuro.OraImport.Test
             using (Stream reader = new FileStream(filename, FileMode.Open))
             {
                 // Call the Deserialize method to restore the object's state.
-                i = (OraXMLStack) serializer.Deserialize(reader);
+                i = (OraXMLMain) serializer.Deserialize(reader);
             }
 
             //ASSERT

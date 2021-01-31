@@ -126,7 +126,7 @@ namespace com.szczuro.importer.ora
     }
 
     [XmlRoot("image")]
-    public class OraXMLStack
+    public class OraXMLMain
     {
         [XmlAttribute("version")] public string Version;
         [XmlAttribute("yres")] public int YRes;
@@ -134,9 +134,9 @@ namespace com.szczuro.importer.ora
         [XmlAttribute("w")] public int Width;
         [XmlAttribute("h")] public int Height;
 
-        [XmlElement("stack")] public OraXMLLayer Layer;
+        [XmlElement("stack")] public OraXMLStack[] stack;
 
-        public struct OraXMLLayer
+        public struct OraXMLStack
         {
             [XmlAttribute("name")] public string Name;
             [XmlAttribute("opacity")] public float Opacity;
@@ -144,7 +144,9 @@ namespace com.szczuro.importer.ora
 
             [XmlAttribute("y")] public int Y;
 
-            [XmlAttribute("visibility")] private string _visibility;
+            [XmlAttribute("visibility")] public string _visibility;
+            
+            [XmlElement("layer")] public OraXMLLayer[] layers;
 
             public Ora.Visibility Visibility
             {
@@ -155,8 +157,16 @@ namespace com.szczuro.importer.ora
             [XmlAttribute("composite-op")] private string _compositeOp;
         }
 
-        struct LayerTag
+        public struct OraXMLLayer
         {
+            [XmlAttribute("name")] public string Name;
+            [XmlAttribute("opacity")] public float Opacity;
+            [XmlAttribute("x")] public int X;
+
+            [XmlAttribute("y")] public int Y;
+
+            [XmlAttribute("visibility")] private string _visibility;
+            [XmlAttribute("src")] private string _src;
         }
     }
 
@@ -180,7 +190,7 @@ namespace com.szczuro.importer.ora
         private OraFile(string path)
         {
             Debug.Log($"Ora import {path}");
-            OraXMLStack structure = GetStructure(path);
+            OraXMLMain structure = GetStructure(path);
             var textureList = GETTextureList(path);
             foreach (var tex in textureList) layers.Add(SpriteFromTexture(tex));
 
@@ -241,7 +251,7 @@ namespace com.szczuro.importer.ora
 
         #region ZipReader
 
-        private static OraXMLStack GetStructure(string zipPath)
+        private static OraXMLMain GetStructure(string zipPath)
         {
             
             using (var archive = ZipFile.OpenRead(zipPath))
@@ -257,13 +267,13 @@ namespace com.szczuro.importer.ora
             return null;
         }
         
-        private static OraXMLStack GetXMLFromEntry(ZipArchiveEntry entry)
+        private static OraXMLMain GetXMLFromEntry(ZipArchiveEntry entry)
         {
             
-            var serializer = new XmlSerializer(typeof(OraXMLStack));
+            var serializer = new XmlSerializer(typeof(OraXMLMain));
             using (var fileStream = entry.Open())
             {
-                return (OraXMLStack) serializer.Deserialize(fileStream);
+                return (OraXMLMain) serializer.Deserialize(fileStream);
                 
             }
         }

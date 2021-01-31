@@ -46,9 +46,11 @@ ExportedObj/
 *.userprefs
 *.pidb
 *.pidb.meta
+
 *.booproj
 *.svd
 /.vs/
+
 
 # --- idea
 /.idea/
@@ -56,6 +58,8 @@ ExportedObj/
 # include meta files
 !*.*.meta
 
+#blendre
+*.blend1* 
 #Temporary 
 *.psb*
 *.psd*
