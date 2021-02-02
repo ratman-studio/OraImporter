@@ -10,15 +10,32 @@ namespace com.szczuro.OraImport.Test
     [TestFixture]
     public class BaseOraTests
     {
-
+        string filename = "Assets/Tests/EditMode/Importer/files/ora/LibertyBell.ora";
         [Test]
-        public void CreateFromFileTest()
-        {
-            var filename = "Assets/Tests/EditMode/Importer/files/ora/LibertyBell.ora";
+        public void CreatedFile_exits()
+        {   
             var file = MultiLayerFileFactory.CreteFileFromPath(filename);
             Assert.NotNull(file);
         }
         
+        
+        [Test]
+        public void CreatedFile_HasLayers()
+        {
+            var file = MultiLayerFileFactory.CreteFileFromPath(filename);
+            var layers = file.GetLayers();
+            Assert.NotNull(layers);
+            Assert.AreEqual(5, layers.Count);
+        }
+        [Test]
+        public void CreatedFile_HasProperLayerName()
+        {
+            var file = MultiLayerFileFactory.CreteFileFromPath(filename);
+            var layers = file.GetLayers();
+            
+            Assert.AreEqual("horsShoe", layers[0].name);
+        }
+
         [Test]
         public void not_valid_compositeOp_return_valid_Blending()
         {

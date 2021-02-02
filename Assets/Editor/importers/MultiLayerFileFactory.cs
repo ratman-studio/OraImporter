@@ -16,7 +16,7 @@ namespace com.szczuro.importer
     {
         Sprite GETThumbnailSprite();
         Sprite GETMergedLayers();
-        List<Sprite> GETLayers();
+        List<Sprite> GetLayers();
     }
 
 }

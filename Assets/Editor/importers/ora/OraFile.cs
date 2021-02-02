@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO.Compression;
+using System.IO.Pipes;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -134,7 +135,7 @@ namespace com.szczuro.importer.ora
         [XmlAttribute("w")] public int Width;
         [XmlAttribute("h")] public int Height;
 
-        [XmlElement("stack")] public OraXMLStack[] stack;
+        [XmlElement("stack")] public OraXMLStack[] stacks;
 
         public struct OraXMLStack
         {
@@ -166,7 +167,24 @@ namespace com.szczuro.importer.ora
             [XmlAttribute("y")] public int Y;
 
             [XmlAttribute("visibility")] private string _visibility;
-            [XmlAttribute("src")] private string _src;
+            [XmlAttribute("src")] public string src;
+        }
+
+        public static string GetNameFromTexture(OraXMLMain oraXML, string textureName)
+        {
+            
+            foreach (var stack in oraXML.stacks)
+            {
+                foreach (var layer in stack.layers)
+                {
+                    if (textureName == layer.src)
+                    {
+                        return layer.Name;
+                    }
+                }
+            }
+
+            return textureName;
         }
     }
 
@@ -183,20 +201,26 @@ namespace com.szczuro.importer.ora
         [SerializeField] public List<Sprite> layers = new List<Sprite>();
         [SerializeField] private Sprite thumbnail;
         [SerializeField] private Sprite mergedLayers;
-
-        private const string ThumbnailName = "thumbnail.png";
+        [SerializeField] private OraXMLMain structure;
+        
+        private const string ThumbnailName = "Thumbnails/thumbnail.png";
         private const string MergeLayersName = "mergedimage.png";
 
         private OraFile(string path)
         {
             Debug.Log($"Ora import {path}");
-            OraXMLMain structure = GetStructure(path);
+            
+            structure = GetStructure(path);
             var textureList = GETTextureList(path);
-            foreach (var tex in textureList) layers.Add(SpriteFromTexture(tex));
+            foreach (var tex in textureList) 
+                layers.Add(SpriteFromTexture(tex));
 
-            //spritesLib = GenerateSpriteList(layers);
             thumbnail = FindSpriteByName(ThumbnailName);
+            if (thumbnail) layers.Remove(thumbnail);
+            
             mergedLayers = FindSpriteByName(MergeLayersName);
+            if (mergedLayers) layers.Remove(mergedLayers);
+             
         }
 
         
@@ -232,7 +256,7 @@ namespace com.szczuro.importer.ora
             return null;
         }
 
-        public List<Sprite> GETLayers()
+        public List<Sprite> GetLayers()
         {
             return layers;
         }
@@ -243,10 +267,17 @@ namespace com.szczuro.importer.ora
             var pivot = new Vector2(.5f, .5f);
             var pixelPerUnit = 100f;
             var sprite = Sprite.Create(texture, rect, pivot, pixelPerUnit);
-            sprite.name = texture.name;
+            sprite.name = GetNameFromTexture(texture);
 
             Debug.Log($"converted to sprite {sprite.name} {sprite}");
             return sprite;
+        }
+
+        private string GetNameFromTexture(Texture2D texture)
+        {
+            if (structure != null)
+                return OraXMLMain.GetNameFromTexture(structure, texture.name);
+            return texture.name;
         }
 
         #region ZipReader
@@ -268,8 +299,7 @@ namespace com.szczuro.importer.ora
         }
         
         private static OraXMLMain GetXMLFromEntry(ZipArchiveEntry entry)
-        {
-            
+        {   
             var serializer = new XmlSerializer(typeof(OraXMLMain));
             using (var fileStream = entry.Open())
             {
@@ -286,10 +316,13 @@ namespace com.szczuro.importer.ora
             {
                 Debug.Log($"{archive.Mode} archive {zipPath}");
                 foreach (var entry in archive.Entries)
+                {
                     if (entry.FullName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+  
                         archives.Add(GETTextureFromEntry(entry));
                     else
                         Debug.LogWarning($"skip entry {entry}");
+                }
             }
 
             return archives;
@@ -303,7 +336,7 @@ namespace com.szczuro.importer.ora
                 var imageData = new byte[entry.Length];
                 fileStream.Read(imageData, 0, (int) entry.Length);
                 texture.LoadImage(imageData);
-                texture.name = entry.Name;
+                texture.name = entry.FullName;
             }
 
             return texture;

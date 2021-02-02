@@ -29,7 +29,7 @@ namespace com.szczuro.importer
 
             // storage place for sprites  
             Debug.Log("Create sprites lib");
-            var spritesLib = _multiLayerFile.GETLayers();
+            var spritesLib = _multiLayerFile.GetLayers();
             Debug.Log($"SpriteLib length {spritesLib.Count}");
 
             //ctx.AddObjectToAsset("spriteLib", spritesLib);
