@@ -28,13 +28,19 @@ namespace com.szczuro.importer
             var filePrefab = RegisterMainPrefab(ctx, fileInfo.Name, _multiLayerFile.GETThumbnailSprite().texture);
 
             // storage place for sprites  
-            Debug.Log("Create sprites lib");
-            var spritesLib = _multiLayerFile.GetLayers();
-            Debug.Log($"SpriteLib length {spritesLib.Count}");
+            if (ImportAs == ImportType.Multi)
+            {
+                Debug.Log("Create sprites lib");
+                var spritesLib = _multiLayerFile.GetLayers();
+                addSpritesToPrefab(ctx, spritesLib);
+            }
 
-            //ctx.AddObjectToAsset("spriteLib", spritesLib);
-            Debug.Log($"add spriteRenderers to prefab");
-            addSpritesToPrefab(ctx, spritesLib);
+            if (ImportAs == ImportType.Single)
+            {
+                var sprite = _multiLayerFile.GETMergedLayers();
+                addSpritesToPrefab(ctx, new List<Sprite>(){
+                sprite});
+            }
 
             Debug.Log($"set main prefab");
             ctx.SetMainObject(filePrefab);

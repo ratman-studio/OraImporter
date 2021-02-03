@@ -222,8 +222,7 @@ namespace com.szczuro.importer.ora
             if (mergedLayers) layers.Remove(mergedLayers);
              
         }
-
-        
+     
 
         public Sprite GETThumbnailSprite()
         {
