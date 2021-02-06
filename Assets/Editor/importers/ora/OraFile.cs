@@ -198,9 +198,9 @@ namespace com.szczuro.importer.ora
             return new OraFile(path);
         }
 
-        [SerializeField] public List<Sprite> layers = new List<Sprite>();
-        [SerializeField] private Sprite thumbnail;
-        [SerializeField] private Sprite mergedLayers;
+        [SerializeField] public List<Texture2D> layers = new List<Texture2D>();
+        [SerializeField] private Texture2D thumbnail;
+        [SerializeField] private Texture2D mergedLayers;
         [SerializeField] private OraXMLMain structure;
         
         private const string ThumbnailName = "Thumbnails/thumbnail.png";
@@ -211,10 +211,8 @@ namespace com.szczuro.importer.ora
             Debug.Log($"Ora import {path}");
             
             structure = GetStructure(path);
-            var textureList = GETTextureList(path);
-            foreach (var tex in textureList) 
-                layers.Add(SpriteFromTexture(tex));
-
+            layers = GETTextureList(path);
+            
             thumbnail = FindSpriteByName(ThumbnailName);
             if (thumbnail) layers.Remove(thumbnail);
             
@@ -223,8 +221,9 @@ namespace com.szczuro.importer.ora
              
         }
      
+        // interface IMultiLayerFile
 
-        public Sprite GETThumbnailSprite()
+        public Texture2D GetThumbnail()
         {
             if (thumbnail == null)
             {
@@ -235,7 +234,7 @@ namespace com.szczuro.importer.ora
             return thumbnail;
         }
 
-        public Sprite GETMergedLayers()
+        public Texture2D GetMergedLayers()
         {
             if (mergedLayers == null)
             {
@@ -245,8 +244,23 @@ namespace com.szczuro.importer.ora
 
             return mergedLayers;
         }
+        
 
-        private Sprite FindSpriteByName(string imageName)
+        public List<Texture2D> GetLayers()
+        {
+            return layers;
+        }
+        
+        public string GetTextureName(Texture2D texture)
+        {
+            if (structure != null)
+                return OraXMLMain.GetNameFromTexture(structure, texture.name);
+            return texture.name;
+        }
+        
+        // interface IMultiLayerFile End
+        
+        private Texture2D FindSpriteByName(string imageName)
         {
             foreach (var sprite in layers)
                 if (sprite.name == imageName)
@@ -255,29 +269,7 @@ namespace com.szczuro.importer.ora
             return null;
         }
 
-        public List<Sprite> GetLayers()
-        {
-            return layers;
-        }
-
-        private Sprite SpriteFromTexture(Texture2D texture)
-        {
-            var rect = new Rect(0f, 0f, texture.width, texture.height);
-            var pivot = new Vector2(.5f, .5f);
-            var pixelPerUnit = 100f;
-            var sprite = Sprite.Create(texture, rect, pivot, pixelPerUnit);
-            sprite.name = GetNameFromTexture(texture);
-
-            Debug.Log($"converted to sprite {sprite.name} {sprite}");
-            return sprite;
-        }
-
-        private string GetNameFromTexture(Texture2D texture)
-        {
-            if (structure != null)
-                return OraXMLMain.GetNameFromTexture(structure, texture.name);
-            return texture.name;
-        }
+        
 
         #region ZipReader
 
@@ -336,6 +328,8 @@ namespace com.szczuro.importer.ora
                 fileStream.Read(imageData, 0, (int) entry.Length);
                 texture.LoadImage(imageData);
                 texture.name = entry.FullName;
+                
+                
             }
 
             return texture;

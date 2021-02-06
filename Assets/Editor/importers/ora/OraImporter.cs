@@ -5,6 +5,9 @@ namespace com.szczuro.importer.ora
     [ScriptedImporter(1, "ora")]
     public class OraImporter : MultiLayerImporter
     {
-        
+        internal static void internalwirking()
+        {
+            
+        }
     }
 }

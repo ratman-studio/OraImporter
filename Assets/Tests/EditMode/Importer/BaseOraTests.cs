@@ -5,7 +5,7 @@ using com.szczuro.importer.ora;
 using NUnit.Framework;
 
 
-namespace com.szczuro.OraImport.Test
+namespace com.szczuro.importer.ora.Tests
 {
     [TestFixture]
     public class BaseOraTests
@@ -26,6 +26,7 @@ namespace com.szczuro.OraImport.Test
             var layers = file.GetLayers();
             Assert.NotNull(layers);
             Assert.AreEqual(5, layers.Count);
+            
         }
         [Test]
         public void CreatedFile_HasProperLayerName()

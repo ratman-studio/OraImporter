@@ -19,7 +19,7 @@ namespace com.szczuro.importer.ora
         {
             serializedObject.Update();
             base.OnInspectorGUI();
-
+            
             EditorGUI.showMixedValue = _importAs.hasMultipleDifferentValues;
             _importAs.intValue = EditorGUILayout.IntPopup(GUITexts.ImportTypeTitle, _importAs.intValue,
                 GUITexts.ImportTypeOptions, GUITexts.ImportTypeValues);
@@ -39,7 +39,42 @@ namespace com.szczuro.importer.ora
                     break;
             }
 
+            DoSpriteEditorButton();
+
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void DoSpriteEditorButton()
+        {
+            using (new EditorGUI.DisabledScope(targets.Length != 1))
+            {
+                GUILayout.BeginHorizontal();
+            
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button(GUITexts.spriteEditorButtonLabel))
+                {
+                    if (HasModified())
+                    {
+                        // To ensure Sprite Editor Window to have the latest texture import setting,
+                        // We must applied those modified values first.
+                        string dialogText = string.Format(GUITexts.unappliedSettingsDialogContent.text, ((AssetImporter)target).assetPath);
+                        if (EditorUtility.DisplayDialog(GUITexts.unappliedSettingsDialogTitle.text,
+                            dialogText, GUITexts.applyButtonLabel.text, GUITexts.revertButtonLabel.text))
+                        {
+                            ApplyAndImport();
+                            //InternalEditorBridge.ShowSpriteEditorWindow();
+            
+                            // We reimported the asset which destroyed the editor, so we can't keep running the UI here.
+                            GUIUtility.ExitGUI();
+                        }
+                    }
+                    else
+                    {
+                        //InternalEditorBridge.ShowSpriteEditorWindow();
+                    }
+                }
+                GUILayout.EndHorizontal();
+            }
         }
 
         private void SingleImageImportGUI()
@@ -58,6 +93,12 @@ namespace com.szczuro.importer.ora
         public static readonly GUIContent ImportTypeTitle =
             new GUIContent("Texture Type", "What will this texture be used for?");
 
+        public static readonly GUIContent unappliedSettingsDialogTitle = new GUIContent("Unapplied import settings");
+        public static readonly GUIContent unappliedSettingsDialogContent = new GUIContent("Unapplied import settings for \'{0}\'.\nApply and continue to sprite editor or cancel.");
+        public static readonly GUIContent applyButtonLabel = new GUIContent("Apply");
+        public static readonly GUIContent revertButtonLabel = new GUIContent("Revert");
+        public static readonly GUIContent spriteEditorButtonLabel = new GUIContent("Sprite Editor");
+            
         public static readonly GUIContent[] ImportTypeOptions =
         {
             new GUIContent("Merged",

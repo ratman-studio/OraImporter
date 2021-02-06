@@ -14,9 +14,11 @@ namespace com.szczuro.importer
 
     public interface IMultiLayerFile
     {
-        Sprite GETThumbnailSprite();
-        Sprite GETMergedLayers();
-        List<Sprite> GetLayers();
+        Texture2D GetThumbnail();
+        Texture2D GetMergedLayers();
+        List<Texture2D> GetLayers();
+        
+        string GetTextureName(Texture2D texture);
     }
 
 }
