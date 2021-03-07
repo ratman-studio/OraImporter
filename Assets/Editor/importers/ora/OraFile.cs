@@ -274,7 +274,7 @@ namespace com.szczuro.importer.ora
         #region ZipReader
 
         private static OraXMLMain GetStructure(string zipPath)
-        {
+        { 
             
             using (var archive = ZipFile.OpenRead(zipPath))
             {

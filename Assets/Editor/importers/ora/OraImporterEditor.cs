@@ -1,13 +1,23 @@
-﻿using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
+﻿using System;
+using com.szczuro.UnityInternalEditorBridge;
+using UnityEditor;
+using UnityEditor.AssetImporters;
+using UnityEditor.Sprites;
+using UnityEditor.U2D;
 using UnityEngine;
+
+
 
 namespace com.szczuro.importer.ora
 {
+    
+
+    
     [CustomEditor(typeof(OraImporter))]
     public class OraImporterEditor : ScriptedImporterEditor
     {
         private SerializedProperty _importAs;
+        
 
         public override void OnEnable()
         {
@@ -49,7 +59,7 @@ namespace com.szczuro.importer.ora
             using (new EditorGUI.DisabledScope(targets.Length != 1))
             {
                 GUILayout.BeginHorizontal();
-            
+             
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button(GUITexts.spriteEditorButtonLabel))
                 {
@@ -62,20 +72,31 @@ namespace com.szczuro.importer.ora
                             dialogText, GUITexts.applyButtonLabel.text, GUITexts.revertButtonLabel.text))
                         {
                             ApplyAndImport();
-                            //InternalEditorBridge.ShowSpriteEditorWindow();
-            
+
+                            UnityBridge.OpenSpriteEditor(this);
+                            // showSpriteEditorWindow();
+
                             // We reimported the asset which destroyed the editor, so we can't keep running the UI here.
                             GUIUtility.ExitGUI();
                         }
                     }
                     else
                     {
-                        //InternalEditorBridge.ShowSpriteEditorWindow();
+                        UnityBridge.OpenSpriteEditor();
+                        //showSpriteEditorWindow();
                     }
-                }
+                } 
                 GUILayout.EndHorizontal();
             }
         }
+        
+        private static Func<bool> showSpriteEditorWindow = (Func<bool>) (() =>
+        {
+            EditorUtility.DisplayDialog(GUITexts.noSpriteEditorWindowTitle.text,
+                GUITexts.noSpriteEditorWindow.text, 
+                GUITexts.okText.text);
+            return false;
+        });
 
         private void SingleImageImportGUI()
         {
@@ -93,12 +114,17 @@ namespace com.szczuro.importer.ora
         public static readonly GUIContent ImportTypeTitle =
             new GUIContent("Texture Type", "What will this texture be used for?");
 
+        public static readonly GUIContent noSpriteEditorWindowTitle = EditorGUIUtility.TrTextContent("Sprite Editor Window");
+        public static readonly GUIContent noSpriteEditorWindow = EditorGUIUtility.TrTextContent("No Sprite Editor Window registered. Please download 2D Sprite package from Package Manager.");
+        public static readonly GUIContent okText = EditorGUIUtility.TrTextContent("OK");
+
         public static readonly GUIContent unappliedSettingsDialogTitle = new GUIContent("Unapplied import settings");
         public static readonly GUIContent unappliedSettingsDialogContent = new GUIContent("Unapplied import settings for \'{0}\'.\nApply and continue to sprite editor or cancel.");
         public static readonly GUIContent applyButtonLabel = new GUIContent("Apply");
         public static readonly GUIContent revertButtonLabel = new GUIContent("Revert");
         public static readonly GUIContent spriteEditorButtonLabel = new GUIContent("Sprite Editor");
             
+        
         public static readonly GUIContent[] ImportTypeOptions =
         {
             new GUIContent("Merged",

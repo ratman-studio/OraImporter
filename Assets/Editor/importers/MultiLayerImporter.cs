@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using UnityEditor.Experimental.AssetImporters;
+
 using UnityEngine;
 
 namespace com.szczuro.importer
 {
-    public class MultiLayerImporter : ScriptedImporter
+    public class MultiLayerImporter : UnityEditor.AssetImporters.ScriptedImporter
     {
         [SerializeField] public ImportType ImportAs = ImportType.Single;
         [SerializeField] private IMultiLayerFile _multiLayerFile;
         
-        public override void OnImportAsset(AssetImportContext ctx)
+        public override void OnImportAsset(UnityEditor.AssetImporters.AssetImportContext ctx)
         {
             if (ctx == null) return;
 
@@ -86,12 +86,12 @@ namespace com.szczuro.importer
         
         
 
-        private void addSpritesToPrefab(AssetImportContext ctx, Sprite sprite)
+        private void addSpritesToPrefab(UnityEditor.AssetImporters.AssetImportContext ctx, Sprite sprite)
         {
             ctx.AddObjectToAsset(sprite.name, sprite);
         }
 
-        private static GameObject RegisterMainPrefab(AssetImportContext ctx, string name, Texture2D thumbNail)
+        private static GameObject RegisterMainPrefab(UnityEditor.AssetImporters.AssetImportContext ctx, string name, Texture2D thumbNail)
         {
             var filePrefab = new GameObject($"{name}_GO");
             ctx.AddObjectToAsset("main", filePrefab, thumbNail);
