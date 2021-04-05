@@ -19,8 +19,8 @@ namespace com.szczuro.importer
         Texture2D GetThumbnail();
         Texture2D GetMergedLayers();
         List<Texture2D> GetLayers();
-        
         string GetTextureName(Texture2D texture);
+        string GetFileName();
     }
 
 }
