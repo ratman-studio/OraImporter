@@ -5,10 +5,13 @@ using UnityEngine;
 
 namespace com.szczuro.importer
 {
+    /// <summary>
+    /// base class to importing multi layer files image files 
+    /// </summary>
     public class MultiLayerImporter : UnityEditor.AssetImporters.ScriptedImporter
     {
         [SerializeField] public ImportType ImportAs = ImportType.Single;
-        [SerializeField] private IMultiLayerFile _multiLayerFile;
+        [SerializeField] private IMultiLayerData _multiLayerData;
         
         public override void OnImportAsset(UnityEditor.AssetImporters.AssetImportContext ctx)
         {
@@ -19,19 +22,19 @@ namespace com.szczuro.importer
             var fileInfo = new FileInfo(path);
 
             //file helper
-            Debug.Log($"Create file {_multiLayerFile}");
-            _multiLayerFile = MultiLayerFileFactory.CreteFileFromPath(path);
+            Debug.Log($"Create file {_multiLayerData}");
+            _multiLayerData = MultiLayerFileFactory.CreteFileFromPath(path);
 
             // Register root prefab that will be visible in project window instead of file
-            var filePrefab = RegisterMainPrefab(ctx, fileInfo.Name, _multiLayerFile.GetThumbnail());
+            var filePrefab = RegisterMainPrefab(ctx, fileInfo.Name, _multiLayerData.GetThumbnail());
               
             if (ImportAs == ImportType.Multi)
             {
                 Debug.Log("Create sprites lib");
-                var textures = _multiLayerFile.GetLayers();
+                var textures = _multiLayerData.GetLayers();
                 foreach (var texture in textures)
                 {
-                    var texName = _multiLayerFile.GetTextureName(texture);
+                    var texName = _multiLayerData.GetTextureName(texture);
                     var sprite = SpriteFromTexture(texture, texName);    
                     addSpritesToPrefab(ctx,sprite);
                 }
@@ -39,15 +42,15 @@ namespace com.szczuro.importer
               
             if (ImportAs == ImportType.Single)
             {
-                var texture = _multiLayerFile.GetMergedLayers();
-                var texName = _multiLayerFile.GetTextureName(texture);
+                var texture = _multiLayerData.GetMergedLayers();
+                var texName = _multiLayerData.GetTextureName(texture);
                 var sprite = SpriteFromTexture(texture, texName);
                 addSpritesToPrefab(ctx, sprite);
             }
             
             if (ImportAs == ImportType.Atlas)
             {
-                var textures = _multiLayerFile.GetLayers();
+                var textures = _multiLayerData.GetLayers();
                 var atlas = crateAtlasTexture(textures);
                 atlas.name = fileInfo.Name;
                 ctx.AddObjectToAsset(fileInfo.Name, atlas);

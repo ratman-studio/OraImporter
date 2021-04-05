@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace com.szczuro.importer
 {
+    /// <summary> provider of files that parse and provide diate </summary>
+    
     public static class MultiLayerFileFactory
     {
-        public static IMultiLayerFile CreteFileFromPath(string path)
+        public static IMultiLayerData CreteFileFromPath(string path)
         {
-            return OraFile.CreateInstance(path);
+            return OraData.CreateFromFile(path);
         }
     }
 
-    public interface IMultiLayerFile
+    public interface IMultiLayerData
     {
         Texture2D GetThumbnail();
         Texture2D GetMergedLayers();

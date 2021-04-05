@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace com.szczuro.importer.ora
 {
+    
+    //////// Ora File example: 
     // <image version="0.0.1" yres="100" xres="100" w="128" h="128">
     // <stack opacity="1" composite-op="svg:src-over" y="0" name="root" isolation="isolate" visibility="visible" x="0">
     // <layer opacity="1" composite-op="svg:src-over" y="16" name="Layer 11" src="data/layer2.png" visibility="hidden" x="27"/>
@@ -16,6 +18,10 @@ namespace com.szczuro.importer.ora
     // </image>
 
 
+    
+    /// <summary>
+    /// cosntans and variables for ora fo;es
+    /// </summary>
     public static class Ora
     {
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction
@@ -189,13 +195,13 @@ namespace com.szczuro.importer.ora
     }
 
     
-    /// <summary> this class unzip ora file and parse all items and provide ILayeredImageFile </summary>
+    /// <summary> parse *.ora file and provide it items vie interface ILayeredImageFile </summary>
     [Serializable]
-    internal class OraFile : IMultiLayerFile
+    internal class OraData : IMultiLayerData
     {
-        public static OraFile CreateInstance(string path)
+        public static OraData CreateFromFile(string path)
         {
-            return new OraFile(path);
+            return new OraData(path);
         }
 
         [SerializeField] public List<Texture2D> layers = new List<Texture2D>();
@@ -206,7 +212,7 @@ namespace com.szczuro.importer.ora
         private const string ThumbnailName = "Thumbnails/thumbnail.png";
         private const string MergeLayersName = "mergedimage.png";
 
-        private OraFile(string path)
+        private OraData(string path)
         {
             Debug.Log($"Ora import {path}");
             
