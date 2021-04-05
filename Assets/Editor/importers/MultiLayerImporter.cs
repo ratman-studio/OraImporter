@@ -6,7 +6,7 @@ using UnityEngine;
 namespace com.szczuro.importer
 {
     /// <summary>
-    /// base class to importing multi layer files image files 
+    /// base class to importing multi layer image files 
     /// </summary>
     public class MultiLayerImporter : UnityEditor.AssetImporters.ScriptedImporter
     {

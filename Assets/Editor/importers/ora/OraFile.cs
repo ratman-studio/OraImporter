@@ -17,11 +17,7 @@ namespace com.szczuro.importer.ora
     // </stack>
     // </image>
 
-
-    
-    /// <summary>
-    /// cosntans and variables for ora fo;es
-    /// </summary>
+    /// <summary> constants, enums and statics for ora files </summary>
     public static class Ora
     {
         // https://www.openraster.org/baseline/layer-stack-spec.html#introduction

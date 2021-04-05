@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace com.szczuro.importer
 {
-    /// <summary> provider of files that parse and provide diate </summary>
+    /// <summary> provider of files that parse and provide data </summary>
     
     public static class MultiLayerFileFactory
     {
