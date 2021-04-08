@@ -157,6 +157,7 @@ namespace com.szczuro.importer.ora
                 var imageData = new byte[entry.Length];
                 fileStream.Read(imageData, 0, (int) entry.Length);
                 texture.LoadImage(imageData);
+                texture.alphaIsTransparency = true;
                 texture.name = entry.FullName;
             }
 

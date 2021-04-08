@@ -72,7 +72,7 @@ namespace com.szczuro.importer.ora
                             dialogText, GUITexts.applyButtonLabel.text, GUITexts.revertButtonLabel.text))
                         {
                             ApplyAndImport();
-
+                            
                             UnityBridge.OpenSpriteEditor(this);
                             // showSpriteEditorWindow();
 
@@ -89,15 +89,7 @@ namespace com.szczuro.importer.ora
                 GUILayout.EndHorizontal();
             }
         }
-        
-        private static Func<bool> showSpriteEditorWindow = (Func<bool>) (() =>
-        {
-            EditorUtility.DisplayDialog(GUITexts.noSpriteEditorWindowTitle.text,
-                GUITexts.noSpriteEditorWindow.text, 
-                GUITexts.okText.text);
-            return false;
-        });
-
+   
         private void SingleImageImportGUI()
         {
             //throw new System.NotImplementedException();

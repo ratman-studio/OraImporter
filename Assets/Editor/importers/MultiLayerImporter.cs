@@ -60,6 +60,7 @@ namespace com.szczuro.importer
         {
             var textures = multiLayerData.GetLayers();
             var atlas = CrateAtlasTexture(textures);
+            
             var fileName = multiLayerData.GetFileName();
             atlas.name = fileName;
             ctx.AddObjectToAsset(fileName, atlas);
@@ -98,6 +99,7 @@ namespace com.szczuro.importer
             var atlas = new Texture2D(1, 1);
             atlas.alphaIsTransparency = true;
             atlas.PackTextures(textures.ToArray(), 1);
+            
             return atlas;
         }
 
