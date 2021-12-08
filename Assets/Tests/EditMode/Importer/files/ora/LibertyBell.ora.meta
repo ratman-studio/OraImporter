@@ -8,4 +8,15 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 3b2e7a59bcf04e03b659240f73d40a14, type: 3}
-  ImportAs: 1
+  ImportAs: 2
+  multiLayerData:
+    layers:
+    - {instanceID: 0}
+    - {instanceID: 0}
+    - {instanceID: 0}
+    - {instanceID: 0}
+    - {instanceID: 0}
+    thumbnail: {instanceID: 0}
+    mergedLayers: {fileID: 2706199070032635179, guid: 6dcd3f8f32edd7b4e957c4f486e49d04, type: 3}
+    path: Assets/Tests/EditMode/Importer/files/ora/LibertyBell.ora
+  atlas: {instanceID: 0}
