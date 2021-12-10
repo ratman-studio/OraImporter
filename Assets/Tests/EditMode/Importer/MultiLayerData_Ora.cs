@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
+﻿using System.Threading;
+using NUnit.Framework;
 using UnityEngine;
 
-namespace com.szczuro.importer.Tests
+namespace studio.ratman.importer.Tests
 {
     [TestFixture]
     public class MultiLayerData_Ora
@@ -19,6 +20,17 @@ namespace com.szczuro.importer.Tests
             Assert.NotNull(multiLayerData);
         }
 
+        [Test]
+        public void GetThumbNail_ret_Texture2d()
+        {
+            // Arrange
+            var multiLayerData = MultiLayerFileFactory.CreteFileFromPath(FILENAME);
+            // Act 
+            var thumbnail = multiLayerData.GetThumbnail();
+            // Assert
+            Assert.IsTrue(thumbnail is Texture2D);
+        } 
+        
         [Test]
         public void GetMergedLayers_ret_Texture2d()
         {

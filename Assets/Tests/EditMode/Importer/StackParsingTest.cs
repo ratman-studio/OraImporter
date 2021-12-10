@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using NUnit.Framework;
 
-namespace com.szczuro.importer.Tests
+namespace studio.ratman.importer.Tests
 {
     public class StackParsingTest
     {

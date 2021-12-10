@@ -1,35 +1,62 @@
-﻿using com.szczuro.UnityInternalEditorBridge;
+﻿using studio.ratman.UnityInternalEditorBridge;
 using UnityEditor;
 using UnityEditor.AssetImporters;
 using UnityEngine;
 
-namespace com.szczuro.importer.ora
+namespace studio.ratman.importer
 {
     public class MultiLayerEditor : ScriptedImporterEditor
     {
-     
+        private const string PROPERTY_NAME_IMPORTAS = "importAs";
+        private const string PROPERTY_NAME_ATLAS = "atlas";
+        
         private SerializedProperty _importAs;
+        private SerializedProperty _atlas;
 
+
+        
         public override void OnEnable()
         {
             base.OnEnable();
-            _importAs = serializedObject.FindProperty("ImportAs");
-            
         }
+        //
+        // public override VisualElement CreateInspectorGUI()
+        // {
+        //     var improtField = new EnumField("Import as", MultiLayerImporter.ImportType.Atlas);
+        //     
+        //     return improtField;
+        //     return new Label("This is a Label in a Custom Editor");
+        // }
 
         public override void OnInspectorGUI()
         {
+            
             serializedObject.Update();
-            base.OnInspectorGUI();
+            
+            _importAs = serializedObject.FindProperty(PROPERTY_NAME_IMPORTAS);
+            _atlas = serializedObject.FindProperty(PROPERTY_NAME_ATLAS);
+            
+            DoInspector();
 
-            EditorGUI.showMixedValue = _importAs.hasMultipleDifferentValues;
+            serializedObject.ApplyModifiedProperties();
+            base.OnInspectorGUI();
+        }
+
+        private void DoInspector()
+        {
+            var importer = serializedObject.targetObject as MultiLayerImporter;
+            
+            // or.atlas;
+            // _multiLayerData = serializedObject.targetObject as MultiLayerData;
+            // EditorGUI.showMixedValue = _importAs.hasMultipleDifferentValues;
+            //_importAs = serializedObject.FindProperty("ImportAs");
             _importAs.intValue = EditorGUILayout.IntPopup(GUITexts.ImportTypeTitle, _importAs.intValue,
                 GUITexts.ImportTypeOptions, GUITexts.ImportTypeValues);
-            EditorGUI.showMixedValue = false;
+            // EditorGUI.showMixedValue = false;
 
             switch ((MultiLayerImporter.ImportType) _importAs.intValue)
             {
-                case MultiLayerImporter.ImportType.Multi:
+                case MultiLayerImporter.ImportType.Sprites:
                     EditorGUILayout.LabelField("Layers");
                     MultiLayerImportGUI();
                     break;
@@ -42,8 +69,6 @@ namespace com.szczuro.importer.ora
             }
 
             DoSpriteEditorButton();
-
-            serializedObject.ApplyModifiedProperties();
         }
 
         private void DoSpriteEditorButton()
@@ -55,7 +80,7 @@ namespace com.szczuro.importer.ora
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button(GUITexts.spriteEditorButtonLabel))
                 {
-                    if (HasModified())
+     if (HasModified())
                     {
                         // To ensure Sprite Editor Window to have the latest texture import setting,
                         // We must applied those modified values first.
@@ -66,7 +91,7 @@ namespace com.szczuro.importer.ora
                         {
                             ApplyAndImport();
 
-                            UnityBridge.OpenSpriteEditor(this);
+                            UnityBridge.OpenSpriteEditor(this.assetTarget);
                             // showSpriteEditorWindow();
 
                             // We reimported the asset which destroyed the editor, so we can't keep running the UI here.
@@ -75,7 +100,8 @@ namespace com.szczuro.importer.ora
                     }
                     else
                     {
-                        UnityBridge.OpenSpriteEditor();
+                        Selection.activeObject = assetTarget;
+                        UnityBridge.OpenSpriteEditor(this.assetTarget);
                         //showSpriteEditorWindow();
                     }
                 }
@@ -94,7 +120,7 @@ namespace com.szczuro.importer.ora
             //throw new System.NotImplementedException();
         }
     }
-    
+
     internal static class GUITexts
     {
         public static readonly GUIContent ImportTypeTitle =
@@ -129,7 +155,7 @@ namespace com.szczuro.importer.ora
         public static readonly int[] ImportTypeValues =
         {
             (int) MultiLayerImporter.ImportType.Single,
-            (int) MultiLayerImporter.ImportType.Multi
+            (int) MultiLayerImporter.ImportType.Sprites
         };
     }
 }

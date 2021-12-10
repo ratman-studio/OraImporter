@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6dcd3f8f32edd7b4e957c4f486e49d04
+guid: 80ab4c0ec5971cb4c8f3a451daada8b4
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -8,15 +8,6 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 3b2e7a59bcf04e03b659240f73d40a14, type: 3}
-  ImportAs: 2
-  multiLayerData:
-    layers:
-    - {instanceID: 0}
-    - {instanceID: 0}
-    - {instanceID: 0}
-    - {instanceID: 0}
-    - {instanceID: 0}
-    thumbnail: {instanceID: 0}
-    mergedLayers: {fileID: 2706199070032635179, guid: 6dcd3f8f32edd7b4e957c4f486e49d04, type: 3}
-    path: Assets/Tests/EditMode/Importer/files/ora/LibertyBell.ora
+  textureType: 1
+  importAs: 1
   atlas: {instanceID: 0}
