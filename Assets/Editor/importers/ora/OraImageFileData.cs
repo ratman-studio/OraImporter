@@ -3,37 +3,35 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Xml.Serialization;
-using Palmmedia.ReportGenerator.Core.Reporting.Builders.Rendering;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
-namespace com.szczuro.importer.ora
+namespace studio.ratman.importer
 {
     /// <summary> parse *.ora file and provide it items vie interface ILayeredImageFile </summary>
     [Serializable]
-    internal class OraData : IMultiLayerData
+    public class OraImageFileData : MultiLayerImageFileData
     {
-        public static OraData CreateFromFile(string path)
+        public static OraImageFileData CreateFromFile(string path)
         {
-            return new OraData(path);
+            return new OraImageFileData(path);
         }
 
         [SerializeField] public List<Texture2D> layers = new List<Texture2D>();
         [SerializeField] private Texture2D thumbnail;
         [SerializeField] public Texture2D mergedLayers;
-        [SerializeField] private OraXMLMain structure;
-        [SerializeField] private string path; 
+        [SerializeField] private OraXMLMain _structure;
+        [SerializeField] private string path;
 
         private const string ThumbnailName = "Thumbnails/thumbnail.png";
         private const string MergeLayersName = "mergedimage.png";
 
-        private OraData(string path)
+        private OraImageFileData(string path)
         {
             this.path = path;
             Debug.Log($"Ora import {this.path}");
 
-            structure = GetStructure(this.path);
+            _structure = GetStructure(this.path);
             layers = GETTextureList(this.path);
 
             thumbnail = FindSpriteByName(ThumbnailName);
@@ -45,7 +43,7 @@ namespace com.szczuro.importer.ora
 
         // interface IMultiLayerFile
 
-        public Texture2D GetThumbnail()
+        public override Texture2D GetThumbnail()
         {
             if (thumbnail == null)
             {
@@ -56,7 +54,7 @@ namespace com.szczuro.importer.ora
             return thumbnail;
         }
 
-        public Texture2D GetMergedLayers()
+        public override Texture2D GetMergedLayers()
         {
             if (mergedLayers == null)
             {
@@ -68,21 +66,31 @@ namespace com.szczuro.importer.ora
         }
 
 
-        public List<Texture2D> GetLayers()
+        public override List<Texture2D> GetLayers()
         {
             return layers;
         }
 
-        public string GetTextureName(Texture2D texture)
+        public override string GetTextureName(Texture2D texture)
         {
-            if (structure != null)
-                return OraXMLMain.GetNameFromTexture(structure, texture.name);
+            if (_structure != null)
+                return OraXMLMain.GetNameFromTexture(_structure, texture.name);
             return texture.name;
         }
 
-        public string GetFileName()
+        public override string GetFileName()
         {
-            return Path.GetFileName(path);
+            return Path.GetFileNameWithoutExtension(path);
+        }
+
+        public override List<string> GetLayerList()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string GetTexture(string textureName)
+        {
+            throw new NotImplementedException();
         }
 
         // interface IMultiLayerFile End
@@ -116,10 +124,9 @@ namespace com.szczuro.importer.ora
             var serializer = new XmlSerializer(typeof(OraXMLMain));
             using (var fileStream = entry.Open())
             {
-                return (OraXMLMain) serializer.Deserialize(fileStream);
+                return (OraXMLMain)serializer.Deserialize(fileStream);
             }
         }
-
 
         private static List<Texture2D> GETTextureList(string zipPath)
         {
@@ -142,20 +149,19 @@ namespace com.szczuro.importer.ora
 
         private static Texture2D GETTextureFromEntry(ZipArchiveEntry entry)
         {
-            
             var settings = new TextureImporterSettings();
             var platformSettings = new TextureImporterPlatformSettings();
             var format = TextureFormat.ARGB32;
             var mipmap = settings.mipmapEnabled;
             var linear = settings.linearTexture;
-            
-            var texture = new Texture2D(2, 2,format,mipmap,linear);
-            
-            texture.alphaIsTransparency = settings.alphaIsTransparency; 
+
+            var texture = new Texture2D(2, 2, format, mipmap, linear);
+
+            texture.alphaIsTransparency = settings.alphaIsTransparency;
             using (var fileStream = entry.Open())
             {
                 var imageData = new byte[entry.Length];
-                fileStream.Read(imageData, 0, (int) entry.Length);
+                fileStream.Read(imageData, 0, (int)entry.Length);
                 texture.LoadImage(imageData);
                 texture.alphaIsTransparency = true;
                 texture.name = entry.FullName;

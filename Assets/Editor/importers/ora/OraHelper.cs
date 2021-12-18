@@ -2,7 +2,7 @@
 using System.IO.Pipes;
 using System.Xml.Serialization;
 
-namespace com.szczuro.importer.ora
+namespace studio.ratman.importer
 {
     
     /// <summary> constants, enums and statics for ora files </summary>

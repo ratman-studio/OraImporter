@@ -11,22 +11,7 @@ namespace studio.ratman.importer
         private const string PROPERTY_NAME_ATLAS = "atlas";
         
         private SerializedProperty _importAs;
-        private SerializedProperty _atlas;
-
-
-        
-        public override void OnEnable()
-        {
-            base.OnEnable();
-        }
-        //
-        // public override VisualElement CreateInspectorGUI()
-        // {
-        //     var improtField = new EnumField("Import as", MultiLayerImporter.ImportType.Atlas);
-        //     
-        //     return improtField;
-        //     return new Label("This is a Label in a Custom Editor");
-        // }
+        private SerializedProperty _atlas; 
 
         public override void OnInspectorGUI()
         {
@@ -46,17 +31,12 @@ namespace studio.ratman.importer
         {
             var importer = serializedObject.targetObject as MultiLayerImporter;
             
-            // or.atlas;
-            // _multiLayerData = serializedObject.targetObject as MultiLayerData;
-            // EditorGUI.showMixedValue = _importAs.hasMultipleDifferentValues;
-            //_importAs = serializedObject.FindProperty("ImportAs");
             _importAs.intValue = EditorGUILayout.IntPopup(GUITexts.ImportTypeTitle, _importAs.intValue,
                 GUITexts.ImportTypeOptions, GUITexts.ImportTypeValues);
-            // EditorGUI.showMixedValue = false;
-
+            
             switch ((MultiLayerImporter.ImportType) _importAs.intValue)
             {
-                case MultiLayerImporter.ImportType.Sprites:
+                case MultiLayerImporter.ImportType.Atlas:
                     EditorGUILayout.LabelField("Layers");
                     MultiLayerImportGUI();
                     break;
@@ -155,7 +135,7 @@ namespace studio.ratman.importer
         public static readonly int[] ImportTypeValues =
         {
             (int) MultiLayerImporter.ImportType.Single,
-            (int) MultiLayerImporter.ImportType.Sprites
+            (int) MultiLayerImporter.ImportType.Atlas
         };
     }
 }

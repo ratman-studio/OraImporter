@@ -11,7 +11,6 @@ namespace studio.ratman.importer
     /// </summary>
     public class MultiLayerImporter : ScriptedImporter
     {
-        
         public enum TextureType
         {
             Default,
@@ -21,8 +20,7 @@ namespace studio.ratman.importer
         public enum ImportType
         {
             Single,
-            Atlas,
-            Sprites,
+            Atlas
         }
 
         [SerializeField] public TextureType textureType = TextureType.Default;
@@ -67,67 +65,85 @@ namespace studio.ratman.importer
 
         private void SpriteImport(AssetImportContext ctx)
         {
-            var merged = _fileData.GetMergedLayers();
-            var importName = _fileData.GetFileName();
-
             switch (importAs)
             {
-                
                 // texture as is 
                 case ImportType.Single:
-                    ctx.AddObjectToAsset(importName, merged);
-                    ctx.SetMainObject(merged);
-                    
-                    var sprite = SpriteFromTexture(merged, importName);
-                    ctx.AddObjectToAsset(sprite.name, sprite);
+                    SpriteImportAsSingle(ctx);
                     break;
 
-                // import atlas and sprites 
-                case ImportType.Sprites:
-                    ctx.AddObjectToAsset(importName, merged);
-                    ctx.SetMainObject(merged);
-                    
-                    AddSingleLayers(ctx, _fileData);
-                    Debug.Log($"set main prefab");
-                    break;
-
-                // import only atlas
                 case ImportType.Atlas:
-                    var go = new GameObject();
-                    ctx.AddObjectToAsset(importName, go);
-                    ctx.SetMainObject(go);
-                    
-                    atlas = CreateAtlas(_fileData);
-                    ctx.AddObjectToAsset(atlas.name, atlas);
+                    SpriteImportAsAtlas(ctx);
                     break;
-                
+
                 default:
                     throw new NotImplementedException($"Import asset not as ImportAs {importAs} is not implemented");
             }
         }
 
-        /// <summary> add layers as atlas </summary>
-        private Texture2D CreateAtlas(MultiLayerImageFileData multiLayerImageFileData)
+        private void SpriteImportAsSingle(AssetImportContext ctx)
         {
-            var textures = multiLayerImageFileData.GetLayers();
-            var result = CrateAtlasTexture(textures);
-            var fileName = multiLayerImageFileData.GetFileName();
-            result.name = fileName;
-            return result;
+            var merged = _fileData.GetMergedLayers();
+            var importName = _fileData.GetFileName();
+            // merged images as main texture
+            ctx.AddObjectToAsset(importName, merged);
+            ctx.SetMainObject(merged);
+            // create sprite from texture
+            var sprite = SpriteFromTexture(merged, importName);
+            ctx.AddObjectToAsset(sprite.name, sprite);
         }
 
-        private void AddSingleLayers(AssetImportContext ctx, MultiLayerImageFileData multiLayerImageFileData)
+        private void SpriteImportAsAtlas(AssetImportContext ctx)
         {
-            Debug.Log("Create sprites lib");
-            var textures = multiLayerImageFileData.GetLayers();
-            foreach (var texture in textures)
+            atlas = CreateAtlas(_fileData, out var sprites);
+            ctx.AddObjectToAsset(atlas.name, atlas);
+            ctx.SetMainObject(atlas);
+            // sprites and sprite renderers as sub objects 
+            foreach (var s in sprites)
             {
-                var texName = multiLayerImageFileData.GetTextureName(texture);
-                var sprite = SpriteFromTexture(texture, texName);
-                //ctx.AddObjectToAsset(texName, texture);
-                AddSpriteToAsset(ctx, sprite);
+                var go = new GameObject();
+                var spriteRenderer = go.AddComponent<SpriteRenderer>();
+
+                spriteRenderer.sprite = s;
+                ctx.AddObjectToAsset(s.name, s);
+
+                go.name = s.name;
+                ctx.AddObjectToAsset(s.name, go);
             }
         }
+
+        /// <summary> add layers as atlas </summary>
+        private Texture2D CreateAtlas(
+            MultiLayerImageFileData multiLayerImageFileData, out List<Sprite> sprites)
+        {
+            var textures = multiLayerImageFileData.GetLayers();
+            var atlasTexture = CrateAtlasTexture(textures, out var rects);
+            var fileName = multiLayerImageFileData.GetFileName();
+
+
+            sprites = new List<Sprite>();
+
+            for (var i = 0; i < rects.Length; i++)
+            {
+                var rect = rects[i];
+                var sprite = CreateAtlasSprite(atlasTexture, rect);
+                // sprites
+                sprite.name = multiLayerImageFileData.GetTextureName(textures[i]);
+                sprites.Add(sprite);
+            }
+
+            atlasTexture.name = fileName;
+            return atlasTexture;
+        }
+
+        private static Sprite CreateAtlasSprite(Texture2D atlasTexture, Rect rect)
+        {
+            var w = atlasTexture.width;
+            var h = atlasTexture.height;
+            var area = new Rect(rect.x * w, rect.y * h, rect.width * w, rect.height * h);
+            return Sprite.Create(atlasTexture, area, Vector2.zero);
+        }
+
 
 
         private static Sprite SpriteFromTexture(Texture2D texture, string textureName = "")
@@ -144,26 +160,13 @@ namespace studio.ratman.importer
             return sprite;
         }
 
-        private static Texture2D CrateAtlasTexture(List<Texture2D> textures)
+        private static Texture2D CrateAtlasTexture(List<Texture2D> textures, out Rect[] rects)
         {
             var atlas = new Texture2D(1, 1);
             atlas.alphaIsTransparency = true;
-            var packed = atlas.PackTextures(textures.ToArray(), 1);
+            rects = atlas.PackTextures(textures.ToArray(), 1);
+
             return atlas;
-        }
-
-        private static void AddSpriteToAsset(AssetImportContext ctx, Sprite sprite)
-        {
-            ctx.AddObjectToAsset(sprite.name, sprite);
-        }
-
-        private static GameObject RegisterMainPrefab(AssetImportContext ctx, string name,
-            Texture2D thumbNail)
-        {
-            var filePrefab = new GameObject($"{name}_GO");
-            ctx.AddObjectToAsset("main", filePrefab, thumbNail);
-
-            return filePrefab;
         }
     }
 }
