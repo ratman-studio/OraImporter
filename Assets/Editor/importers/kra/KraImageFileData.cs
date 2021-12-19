@@ -21,7 +21,7 @@ namespace studio.ratman.importer
         [SerializeField] public List<Texture2D> layers = new List<Texture2D>();
         [SerializeField] private Texture2D thumbnail;
         [SerializeField] public Texture2D mergedLayers;
-        [SerializeField] private KraXML.MainDoc _structure;
+        [SerializeField] private KraXML.MainDoc.Doc _mainDoc;
         [SerializeField] private string path;
 
         private const string ThumbnailName = "preview.png";
@@ -32,7 +32,7 @@ namespace studio.ratman.importer
             this.path = path;
             Debug.Log($"Kra import {this.path}");
 
-            _structure = GetStructure(this.path);
+            _mainDoc = GetStructure(this.path);
             // layers = GETTextureList(this.path);
             //
             thumbnail = FindSpriteByName(ThumbnailName);
@@ -74,8 +74,8 @@ namespace studio.ratman.importer
 
         public override string GetTextureName(Texture2D texture)
         {
-            if (_structure != null)
-                return KraXML.MainDoc.GetNameFromTexture(_structure, texture.name);
+            if (_mainDoc != null)
+                return KraXML.MainDoc.GetNameFromTexture(_mainDoc, texture.name);
             return texture.name;
         }
 
@@ -105,14 +105,14 @@ namespace studio.ratman.importer
             return null;
         }
 
-        private static KraXML.MainDoc GetStructure(string zipPath)
+        private static KraXML.MainDoc.Doc GetStructure(string zipPath)
         {
             using (var archive = ZipFile.OpenRead(zipPath))
             {
                 Debug.Log($"{archive.Mode} archive {zipPath}");
                 foreach (var entry in archive.Entries)
                     if (entry.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
-                        return GetXMLFromEntry(entry);
+                        return GetXMLFromEntry<KraXML.MainDoc.Doc>(entry);
                     else
                         Debug.LogWarning($"skip entry {entry}");
             }
@@ -120,12 +120,12 @@ namespace studio.ratman.importer
             return null;
         }
 
-        private static KraXML.MainDoc GetXMLFromEntry(ZipArchiveEntry entry)
+        private static T GetXMLFromEntry<T>(ZipArchiveEntry entry) 
         {
-            var serializer = new XmlSerializer(typeof(KraXML.MainDoc));
+            var serializer = new XmlSerializer(typeof(T));
             using (var fileStream = entry.Open())
             {
-                return (KraXML.MainDoc)serializer.Deserialize(fileStream);
+                return (T)serializer.Deserialize(fileStream);
             }
         }
 

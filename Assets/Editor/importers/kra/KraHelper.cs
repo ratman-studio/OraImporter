@@ -3,7 +3,6 @@ using System.Xml.Serialization;
 
 namespace studio.ratman.importer
 {
-    
     /// <summary> constants, enums and statics for kra files </summary>
     public static class Kra
     {
@@ -70,26 +69,26 @@ namespace studio.ratman.importer
         // composite to blending map 
         private static readonly Dictionary<string, Blending> BlendingDict = new Dictionary<string, Blending>()
         {
-            {SrcOver, Blending.Normal},
-            {Multiply, Blending.Multiply},
-            {Screen, Blending.Screen},
-            {Overlay, Blending.Overlay},
-            {Darken, Blending.Darken},
-            {Lighten, Blending.Lighten},
-            {ColorDodge, Blending.ColorDodge},
-            {ColorBurn, Blending.ColorBurn},
-            {HardLight, Blending.HardLight},
-            {SoftLight, Blending.SoftLight},
-            {Difference, Blending.Difference},
-            {Color, Blending.Color},
-            {Luminosity, Blending.Luminosity},
-            {Hue, Blending.Hue},
-            {Saturation, Blending.Saturation},
-            {Plus, Blending.Normal},
-            {DstOut, Blending.Normal},
-            {DstIn, Blending.Normal},
-            {SrcAtop, Blending.Normal},
-            {DstAtop, Blending.Normal}
+            { SrcOver, Blending.Normal },
+            { Multiply, Blending.Multiply },
+            { Screen, Blending.Screen },
+            { Overlay, Blending.Overlay },
+            { Darken, Blending.Darken },
+            { Lighten, Blending.Lighten },
+            { ColorDodge, Blending.ColorDodge },
+            { ColorBurn, Blending.ColorBurn },
+            { HardLight, Blending.HardLight },
+            { SoftLight, Blending.SoftLight },
+            { Difference, Blending.Difference },
+            { Color, Blending.Color },
+            { Luminosity, Blending.Luminosity },
+            { Hue, Blending.Hue },
+            { Saturation, Blending.Saturation },
+            { Plus, Blending.Normal },
+            { DstOut, Blending.Normal },
+            { DstIn, Blending.Normal },
+            { SrcAtop, Blending.Normal },
+            { DstAtop, Blending.Normal }
         };
 
 
@@ -115,74 +114,107 @@ namespace studio.ratman.importer
         }
     }
 
-    //////// Ora File example: 
-    // <image version="0.0.1" yres="100" xres="100" w="128" h="128">
-    // <stack opacity="1" composite-op="svg:src-over" y="0" name="root" isolation="isolate" visibility="visible" x="0">
-    // <layer opacity="1" composite-op="svg:src-over" y="16" name="Layer 11" src="data/layer2.png" visibility="hidden" x="27"/>
-    // <layer opacity="1" composite-op="svg:src-over" y="25" name="Layer 2" src="data/layer1.png" visibility="hidden" x="25"/>
-    // <layer opacity="1" composite-op="svg:src-over" y="0" name="Background" src="data/layer0.png" visibility="visible" x="0"/>
-    // </stack>
-    // </image>
 
     public class KraXML
     {
-
         /// <summary>
-        /// ora stack xml parser helper
+        /// kra stack xml parser helper
         /// </summary>
-        /// 
-        [XmlRoot("image")]
+        ///
         public class MainDoc
         {
-            [XmlAttribute("version")] public string Version;
-            [XmlAttribute("yres")] public int YRes;
-            [XmlAttribute("xres")] public int XRes;
-            [XmlAttribute("w")] public int Width;
-            [XmlAttribute("h")] public int Height;
+            /*    
+            <DOC xmlns="http://www.calligra.org/DTD/krita" kritaVersion="4.3.0" editor="Krita" syntaxVersion="2">
+                <IMAGE colorspacename="RGBA" description="" mime="application/x-kra" profile="sRGB-elle-V2-srgbtrc.icc" y-res="100" width="128" x-res="100" height="128" name="Unnamed">
+                    <layers>
+                       <layer locked="0" colorlabel="0" colorspacename="RGBA" onionskin="0" visible="1" channellockflags="1111" compositeop="normal" name="Layer 14" selected="true" filename="layer2" nodetype="paintlayer" y="0" opacity="255" x="0" channelflags="" intimeline="1" collapsed="0" uuid="{862360e3-2524-470f-ac48-6549e6704e4d}"/>
+                       <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{65db28fc-b9db-453e-a3f3-1230477966aa}" filename="layer3" visible="0" y="0" locked="0" name="Layer 13"/>
+                       <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{53326e8b-cda0-44c1-b0dc-02fbf81f58c1}" filename="layer4" visible="0" y="0" locked="0" name="Layer 12"/>
+                       <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{b22de5f1-9403-4a5d-ae12-321c00efddde}" filename="layer5" visible="0" y="0" locked="0" name="Layer 11"/>
+                       <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{d1f1f805-9939-4320-ac0d-b35dee9aa58a}" filename="layer6" visible="0" y="0" locked="0" name="Layer 2"/>
+                       <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{ea95b43d-4182-4744-b26e-7b7b8e58299f}" filename="layer7" visible="1" y="0" locked="0" name="Background"/>
+                    </layers>
+                    <ProjectionBackgroundColor ColorData="AAAAAA=="/>
+                    <GlobalAssistantsColor SimpleColorData="176,176,176,255"/>
+                    <Palettes/>
+                    <animation>
+                       <framerate value="24" type="value"/>
+                       <range from="0" to="100" type="timerange"/>
+                       <currentTime value="0" type="value"/>
+                  </animation>
+                </IMAGE>
+            </DOC>
+            */
 
-            [XmlElement("stack")] public Stack[] stacks;
-
-            public struct Stack
+            [XmlRoot("doc")]
+            public class Doc
             {
-                [XmlAttribute("name")] public string Name;
-                [XmlAttribute("opacity")] public float Opacity;
-                [XmlAttribute("x")] public int X;
-
-                [XmlAttribute("y")] public int Y;
-
-                [XmlAttribute("visibility")] public string _visibility;
-
-                [XmlElement("layer")] public Layer[] layers;
-
-                public Kra.Visibility Visibility
-                {
-                    get => _visibility.Equals("visible") ? Kra.Visibility.Visible : Kra.Visibility.Hidden;
-                    set => _visibility = value == Kra.Visibility.Visible ? "visible" : "hidden";
-                }
-
-                [XmlAttribute("composite-op")] private string _compositeOp;
+                [XmlAttribute("kritaVersion")] public string KritaVersion; // "4.3.0"
+                [XmlAttribute("editor")] public string Krita; // "Krita"
+                [XmlAttribute("syntaxVersion")] public int SyntaxVersion; // "2"
+                [XmlElement("image")] public ImageDto Image;
             }
 
-            public struct Layer
+            public class ImageDto
             {
-                [XmlAttribute("name")] public string Name;
-                [XmlAttribute("opacity")] public float Opacity;
-                [XmlAttribute("x")] public int X;
+                [XmlAttribute("colorspacename")] public string Colorspacename; // "RGBA"
+                [XmlAttribute("description")] public string Description;
+                [XmlAttribute("mime")] public string Mime; //"application/x-kra"
+                [XmlAttribute("profile")] public string Profile; //"sRGB-elle-V2-srgbtrc.icc"
 
-                [XmlAttribute("y")] public int Y;
+                [XmlAttribute("y-res")] public int YRes;
+                [XmlAttribute("x-res")] public int XRes;
 
-                [XmlAttribute("visibility")] private string _visibility;
-                [XmlAttribute("src")] public string src;
+                [XmlAttribute("width")] public int Width;
+                [XmlAttribute("height")] public int Height;
+
+                [XmlAttribute("name")] public string Name; // Unamed
+
+                [XmlElement("stack")] public LayersDto[] LayerGroup;
             }
 
-            public static string GetNameFromTexture(MainDoc xml, string textureName)
+            public struct LayersDto
             {
+                [XmlElement("layer")] public LayerDto[] Layers;
+            }
 
-                foreach (var stack in xml.stacks)
+
+            // <layer locked="0" colorlabel="0" colorspacename="RGBA" onionskin="0" visible="1" channellockflags="1111" compositeop="normal" name="Layer 14" selected="true" filename="layer2" nodetype="paintlayer" y="0" opacity="255" x="0" channelflags="" intimeline="1" collapsed="0" uuid="{862360e3-2524-470f-ac48-6549e6704e4d}"/>
+            public struct LayerDto
+            {
+                [XmlAttribute("colorspacename")] public string ColorSpaceName; //"RGBA"
+                [XmlAttribute("opacity")] public float Opacity;
+                [XmlAttribute("x")] public int X;
+                [XmlAttribute("y")] public int Y;
+                [XmlAttribute("compositeop")] public string CompositeOp; //"normal"
+                [XmlAttribute("name")] public string Name; //"Layer 14"
+                [XmlAttribute("filename")] public string FileName; //"Layer2"
+
+                [XmlAttribute("nodetype")] public bool NodeType; //"paintlayer"
+
+                [XmlAttribute("uuid")] public string UUID; //"{862360e3-2524-470f-ac48-6549e6704e4d}"
+
+                [XmlAttribute("selected")] public bool Selected; //"true"
+                [XmlAttribute("locked")] public int Locked; //"0"
+                [XmlAttribute("visible")] private bool _visibility;
+                [XmlAttribute("onionskin")] public int OnionSkin; //"0"
+                [XmlAttribute("collapsed")] public string Collapsed; //"0"
+                [XmlAttribute("intimeline")] public int InTimeLine; //"1"
+
+                [XmlAttribute("colorlabel")] public int ColorLabel; // "0"
+                [XmlAttribute("channellockflags")] public string ChannelLockFlags; //"1111"
+                [XmlAttribute("channelflags")] public string ChannelFlags; //""
+
+                [XmlAttribute("src")] public string Src;
+            }
+
+            public static string GetNameFromTexture(Doc xml, string textureName)
+            {
+                foreach (var group in xml.Image.LayerGroup)
                 {
-                    foreach (var layer in stack.layers)
+                    foreach (var layer in group.Layers)
                     {
-                        if (textureName == layer.src)
+                        if (textureName == layer.Src)
                         {
                             return layer.Name;
                         }
@@ -191,7 +223,6 @@ namespace studio.ratman.importer
 
                 return textureName;
             }
-
         }
     }
 }

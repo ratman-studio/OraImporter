@@ -1,6 +1,4 @@
 ﻿using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace studio.ratman.importer
 {
@@ -17,6 +15,4 @@ namespace studio.ratman.importer
             base.OnInspectorGUI();
         }
     }
-
-    
 }
