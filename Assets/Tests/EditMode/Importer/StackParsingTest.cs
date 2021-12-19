@@ -12,7 +12,7 @@ namespace studio.ratman.importer.Tests
             //ARRANGE
             var serializer = new XmlSerializer(typeof(OraXMLMain));
             OraXMLMain i;
-            var filename = "Assets/Tests/EditMode/Importer/files/ora/stack.xml";
+            var filename = "Assets/Tests/EditMode/Importer/files/ora_unpacked/stack.xml";
             
             //ACT
             using (Stream reader = new FileStream(filename, FileMode.Open))

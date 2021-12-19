@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE DOC PUBLIC '-//KDE//DTD krita 2.0//EN' 'http://www.calligra.org/DTD/krita-2.0.dtd'>
+<DOC xmlns="http://www.calligra.org/DTD/krita" kritaVersion="4.3.0" editor="Krita" syntaxVersion="2">
+ <IMAGE colorspacename="RGBA" description="" mime="application/x-kra" profile="sRGB-elle-V2-srgbtrc.icc" y-res="100" width="128" x-res="100" height="128" name="Unnamed">
+  <layers>
+   <layer locked="0" colorlabel="0" colorspacename="RGBA" onionskin="0" visible="1" channellockflags="1111" compositeop="normal" name="Layer 14" selected="true" filename="layer2" nodetype="paintlayer" y="0" opacity="255" x="0" channelflags="" intimeline="1" collapsed="0" uuid="{862360e3-2524-470f-ac48-6549e6704e4d}"/>
+   <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{65db28fc-b9db-453e-a3f3-1230477966aa}" filename="layer3" visible="0" y="0" locked="0" name="Layer 13"/>
+   <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{53326e8b-cda0-44c1-b0dc-02fbf81f58c1}" filename="layer4" visible="0" y="0" locked="0" name="Layer 12"/>
+   <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{b22de5f1-9403-4a5d-ae12-321c00efddde}" filename="layer5" visible="0" y="0" locked="0" name="Layer 11"/>
+   <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{d1f1f805-9939-4320-ac0d-b35dee9aa58a}" filename="layer6" visible="0" y="0" locked="0" name="Layer 2"/>
+   <layer colorlabel="0" channellockflags="1111" colorspacename="RGBA" compositeop="normal" onionskin="0" opacity="255" collapsed="0" channelflags="" intimeline="1" x="0" nodetype="paintlayer" uuid="{ea95b43d-4182-4744-b26e-7b7b8e58299f}" filename="layer7" visible="1" y="0" locked="0" name="Background"/>
+  </layers>
+  <ProjectionBackgroundColor ColorData="AAAAAA=="/>
+  <GlobalAssistantsColor SimpleColorData="176,176,176,255"/>
+  <Palettes/>
+  <animation>
+   <framerate value="24" type="value"/>
+   <range from="0" to="100" type="timerange"/>
+   <currentTime value="0" type="value"/>
+  </animation>
+ </IMAGE>
+</DOC>
