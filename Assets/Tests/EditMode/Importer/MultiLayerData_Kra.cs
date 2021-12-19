@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace studio.ratman.importer.Tests
@@ -11,7 +12,16 @@ namespace studio.ratman.importer.Tests
         private const int EXPECTED_LAYERS = 5;
         private const string EXPECTED_FILENAME = "LibertyBell_KRA";
         private const string EXPECTED_TEXTURE_NAME = "horsShoe";
+        private static readonly Type EXPECTED_TYPE = typeof(KraImageFileData);
 
+        [Test]
+        public void CreatedFile_ProperType()
+        {
+            var multiLayerData = MultiLayerFileFactory.CreteFileFromPath(FILEPATH);
+            Assert.AreEqual(EXPECTED_TYPE,multiLayerData.GetType());
+        }
+        
+        
         [Test]
         public void CreatedFile_exits()
         {
