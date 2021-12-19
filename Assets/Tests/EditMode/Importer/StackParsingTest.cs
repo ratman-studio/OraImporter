@@ -10,15 +10,15 @@ namespace studio.ratman.importer.Tests
         public void simple_stackXml_parsing_test()
         {
             //ARRANGE
-            var serializer = new XmlSerializer(typeof(OraXMLMain));
-            OraXMLMain i;
+            var serializer = new XmlSerializer(typeof(OraXML.Main));
+            OraXML.Main i;
             var filename = "Assets/Tests/EditMode/Importer/files/ora_unpacked/stack.xml";
             
             //ACT
             using (Stream reader = new FileStream(filename, FileMode.Open))
             {
                 // Call the Deserialize method to restore the object's state.
-                i = (OraXMLMain) serializer.Deserialize(reader);
+                i = (OraXML.Main) serializer.Deserialize(reader);
             }
 
             //ASSERT

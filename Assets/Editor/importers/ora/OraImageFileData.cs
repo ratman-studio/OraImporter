@@ -21,7 +21,7 @@ namespace studio.ratman.importer
         [SerializeField] public List<Texture2D> layers = new List<Texture2D>();
         [SerializeField] private Texture2D thumbnail;
         [SerializeField] public Texture2D mergedLayers;
-        [SerializeField] private OraXMLMain _structure;
+        [SerializeField] private OraXML.Main _structure;
         [SerializeField] private string path;
 
         private const string ThumbnailName = "Thumbnails/thumbnail.png";
@@ -75,7 +75,7 @@ namespace studio.ratman.importer
         public override string GetTextureName(Texture2D texture)
         {
             if (_structure != null)
-                return OraXMLMain.GetNameFromTexture(_structure, texture.name);
+                return OraXML.Main.GetNameFromTexture(_structure, texture.name);
             return texture.name;
         }
 
@@ -105,7 +105,7 @@ namespace studio.ratman.importer
             return null;
         }
 
-        private static OraXMLMain GetStructure(string zipPath)
+        private static OraXML.Main GetStructure(string zipPath)
         {
             using (var archive = ZipFile.OpenRead(zipPath))
             {
@@ -120,12 +120,12 @@ namespace studio.ratman.importer
             return null;
         }
 
-        private static OraXMLMain GetXMLFromEntry(ZipArchiveEntry entry)
+        private static OraXML.Main GetXMLFromEntry(ZipArchiveEntry entry)
         {
-            var serializer = new XmlSerializer(typeof(OraXMLMain));
+            var serializer = new XmlSerializer(typeof(OraXML.Main));
             using (var fileStream = entry.Open())
             {
-                return (OraXMLMain)serializer.Deserialize(fileStream);
+                return (OraXML.Main)serializer.Deserialize(fileStream);
             }
         }
 

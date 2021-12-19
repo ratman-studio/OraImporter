@@ -116,79 +116,83 @@ namespace studio.ratman.importer
         }
     }
 
-    //////// Ora File example: 
-    // <image version="0.0.1" yres="100" xres="100" w="128" h="128">
-    // <stack opacity="1" composite-op="svg:src-over" y="0" name="root" isolation="isolate" visibility="visible" x="0">
-    // <layer opacity="1" composite-op="svg:src-over" y="16" name="Layer 11" src="data/layer2.png" visibility="hidden" x="27"/>
-    // <layer opacity="1" composite-op="svg:src-over" y="25" name="Layer 2" src="data/layer1.png" visibility="hidden" x="25"/>
-    // <layer opacity="1" composite-op="svg:src-over" y="0" name="Background" src="data/layer0.png" visibility="visible" x="0"/>
-    // </stack>
-    // </image>
-    
-    /// <summary>
-    /// ora stack xml parser helper
-    /// </summary>
-    /// 
-    [XmlRoot("image")]
-    public class OraXMLMain
+    public static class OraXML
     {
-        [XmlAttribute("version")] public string Version;
-        [XmlAttribute("yres")] public int YRes;
-        [XmlAttribute("xres")] public int XRes;
-        [XmlAttribute("w")] public int Width;
-        [XmlAttribute("h")] public int Height;
 
-        [XmlElement("stack")] public OraXMLStack[] stacks;
+        //////// Ora File example: 
+        // <image version="0.0.1" yres="100" xres="100" w="128" h="128">
+        // <stack opacity="1" composite-op="svg:src-over" y="0" name="root" isolation="isolate" visibility="visible" x="0">
+        // <layer opacity="1" composite-op="svg:src-over" y="16" name="Layer 11" src="data/layer2.png" visibility="hidden" x="27"/>
+        // <layer opacity="1" composite-op="svg:src-over" y="25" name="Layer 2" src="data/layer1.png" visibility="hidden" x="25"/>
+        // <layer opacity="1" composite-op="svg:src-over" y="0" name="Background" src="data/layer0.png" visibility="visible" x="0"/>
+        // </stack>
+        // </image>
 
-        public struct OraXMLStack
+        /// <summary>
+        /// ora stack xml parser helper
+        /// </summary>
+        
+        [XmlRoot("image")]
+        public class Main
         {
-            [XmlAttribute("name")] public string Name;
-            [XmlAttribute("opacity")] public float Opacity;
-            [XmlAttribute("x")] public int X;
+            [XmlAttribute("version")] public string Version;
+            [XmlAttribute("yres")] public int YRes;
+            [XmlAttribute("xres")] public int XRes;
+            [XmlAttribute("w")] public int Width;
+            [XmlAttribute("h")] public int Height;
 
-            [XmlAttribute("y")] public int Y;
+            [XmlElement("stack")] public Stack[] Stacks;
 
-            [XmlAttribute("visibility")] public string _visibility;
-            
-            [XmlElement("layer")] public OraXMLLayer[] layers;
-
-            public Ora.Visibility Visibility
+            // ora xml stack element
+            public struct Stack
             {
-                get => _visibility.Equals("visible") ? Ora.Visibility.Visible : Ora.Visibility.Hidden;
-                set => _visibility = value == Ora.Visibility.Visible ? "visible" : "hidden";
+                [XmlAttribute("name")] public string Name;
+                [XmlAttribute("opacity")] public float Opacity;
+                [XmlAttribute("x")] public int X;
+
+                [XmlAttribute("y")] public int Y;
+
+                [XmlAttribute("visibility")] public string _visibility;
+
+                [XmlElement("layer")] public Layer[] Layers;
+
+                public Ora.Visibility Visibility
+                {
+                    get => _visibility.Equals("visible") ? Ora.Visibility.Visible : Ora.Visibility.Hidden;
+                    set => _visibility = value == Ora.Visibility.Visible ? "visible" : "hidden";
+                }
+
+                [XmlAttribute("composite-op")] private string _compositeOp;
             }
 
-            [XmlAttribute("composite-op")] private string _compositeOp;
-        }
-
-        public struct OraXMLLayer
-        {
-            [XmlAttribute("name")] public string Name;
-            [XmlAttribute("opacity")] public float Opacity;
-            [XmlAttribute("x")] public int X;
-
-            [XmlAttribute("y")] public int Y;
-
-            [XmlAttribute("visibility")] private string _visibility;
-            [XmlAttribute("src")] public string src;
-        }
-
-        public static string GetNameFromTexture(OraXMLMain oraXML, string textureName)
-        {
-            
-            foreach (var stack in oraXML.stacks)
+            // ora xml layer element  
+            public struct Layer
             {
-                foreach (var layer in stack.layers)
+                [XmlAttribute("name")] public string Name;
+                [XmlAttribute("opacity")] public float Opacity;
+                [XmlAttribute("x")] public int X;
+
+                [XmlAttribute("y")] public int Y;
+
+                [XmlAttribute("visibility")] private string _visibility;
+                [XmlAttribute("src")] public string Src;
+            }
+
+            public static string GetNameFromTexture(Main oraXML, string textureName)
+            {
+
+                foreach (var stack in oraXML.Stacks)
                 {
-                    if (textureName == layer.src)
+                    foreach (var layer in stack.Layers)
                     {
-                        return layer.Name;
+                        if (textureName == layer.Src)
+                        {
+                            return layer.Name;
+                        }
                     }
                 }
+                return textureName;
             }
-
-            return textureName;
         }
-        
     }
 }
