@@ -58,10 +58,10 @@ ExportedObj/
 # include meta files
 !*.*.meta
 
-#blendre
+#blender
 *.blend1* 
 #Temporary 
 *.psb*
 *.psd*
-*.kra*
+#*.kra*
 
